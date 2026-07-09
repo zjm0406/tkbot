@@ -7,6 +7,8 @@ metadata:
   wander_score: 19
   wander_seeds: ["智能体生成问题的价值衡量", "涌现"]
   wander_date: 2026-07-09
+  citation_count: 1
+  last_cited: 2026-07-09
   reactivate_after: 2026-07-23
   tags: ["苏格拉底方法", "追问", "问题生成", "长期探索"]
 ---

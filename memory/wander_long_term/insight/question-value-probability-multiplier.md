@@ -7,6 +7,8 @@ metadata:
   wander_score: 24
   wander_seeds: ["智能体生成问题的价值衡量", "Wander Mode 发散思考系统"]
   wander_date: 2026-07-09
+  citation_count: 1
+  last_cited: 2026-07-09
   tags: ["问题评估", "价值衡量", "评分系统", "概率"]
 ---
 

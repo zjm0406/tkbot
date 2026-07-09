@@ -7,6 +7,8 @@ metadata:
   wander_score: 22
   wander_seeds: ["涌现", "Wander Mode 发散思考系统"]
   wander_date: 2026-07-09
+  citation_count: 1
+  last_cited: 2026-07-09
   tags: ["涌现", "Wander Mode", "评估基准", "设计哲学"]
 ---
 

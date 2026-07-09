@@ -7,6 +7,8 @@ metadata:
   wander_score: 21
   wander_seeds: ["Wander Mode 发散思考系统", "Claude Code 扩展机制"]
   wander_date: 2026-07-09
+  citation_count: 1
+  last_cited: 2026-07-09
   reactivate_after: 2026-07-16
   tags: ["架构设计", "Claude Code", "扩展机制", "工程化"]
 ---

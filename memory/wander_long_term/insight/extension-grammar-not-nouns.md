@@ -7,6 +7,8 @@ metadata:
   wander_score: 22
   wander_seeds: ["Claude Code 扩展机制"]
   wander_date: 2026-07-09
+  citation_count: 1
+  last_cited: 2026-07-09
   tags: ["扩展机制", "架构设计", "Claude Code", "插件系统"]
 ---
 

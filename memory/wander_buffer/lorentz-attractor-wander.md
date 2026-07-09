@@ -6,6 +6,7 @@ metadata:
   wander_score: 17
   wander_seeds: ["涌现", "智能体认知架构"]
   wander_date: 2026-07-09
+  citation_count: 0
   expires_at: 2026-07-16
 ---
 
