@@ -1,0 +1,205 @@
+{
+  "version": "0.2",
+  "date": "2026-07-09",
+  "name": "cognitive_duel_rubric",
+  "max_base_score": 50,
+  "dimensions": [
+    {
+      "key": "novelty",
+      "label": "Novelty",
+      "min": 1,
+      "max": 5,
+      "score_1": "Restates known memory or obvious project language.",
+      "score_3": "Adds a small new angle or recombination.",
+      "score_5": "Creates a genuinely new frame that is not already present in memory."
+    },
+    {
+      "key": "connection",
+      "label": "Connection",
+      "min": 1,
+      "max": 5,
+      "score_1": "Uses only same-domain associations.",
+      "score_3": "Creates a useful cross-domain link.",
+      "score_5": "Creates a distant but coherent structural mapping."
+    },
+    {
+      "key": "usefulness",
+      "label": "Usefulness",
+      "min": 1,
+      "max": 5,
+      "score_1": "Does not help the project decide anything.",
+      "score_3": "Suggests a possible next step.",
+      "score_5": "Directly changes what should be done next."
+    },
+    {
+      "key": "coherence",
+      "label": "Coherence",
+      "min": 1,
+      "max": 5,
+      "score_1": "Scattered or hard to follow.",
+      "score_3": "Mostly clear with some weak transitions.",
+      "score_5": "Tight reasoning with explicit transitions."
+    },
+    {
+      "key": "evidence_grounding",
+      "label": "Evidence Grounding",
+      "min": 1,
+      "max": 5,
+      "score_1": "Abstract only, no project artifact grounding.",
+      "score_3": "Cites some project artifacts.",
+      "score_5": "Separates observed facts from interpretation using visible artifacts."
+    },
+    {
+      "key": "falsifiability",
+      "label": "Falsifiability",
+      "min": 1,
+      "max": 5,
+      "score_1": "Cannot be wrong or tested.",
+      "score_3": "Partly testable but vague.",
+      "score_5": "States clear disconfirming conditions."
+    },
+    {
+      "key": "anti_recursion",
+      "label": "Anti-Recursion",
+      "min": 1,
+      "max": 5,
+      "score_1": "Falls into self-nesting.",
+      "score_3": "Notices recursion risk late.",
+      "score_5": "Interrupts recursion with a concrete return path to artifact, behavior, or test."
+    },
+    {
+      "key": "behavioral_delta",
+      "label": "Behavioral Delta",
+      "min": 1,
+      "max": 5,
+      "score_1": "No next-run behavior change.",
+      "score_3": "Vague improvement direction.",
+      "score_5": "Smallest concrete next-run behavior change is proposed."
+    },
+    {
+      "key": "compression_quality",
+      "label": "Compression Quality",
+      "min": 1,
+      "max": 5,
+      "score_1": "Slogan or loose summary.",
+      "score_3": "Decent summary.",
+      "score_5": "Dense reusable rule that can guide future runs."
+    },
+    {
+      "key": "future_leverage",
+      "label": "Future Leverage",
+      "min": 1,
+      "max": 5,
+      "score_1": "One-off thought.",
+      "score_3": "Reusable in the current project.",
+      "score_5": "Improves the probability that the next round will think better."
+    }
+  ],
+  "penalties": [
+    {
+      "key": "execution_without_receipt",
+      "points": -5,
+      "trigger": "Claims execution without touched files or an execution receipt."
+    },
+    {
+      "key": "meta_without_grounding",
+      "points": -5,
+      "trigger": "More than two consecutive meta-levels without returning to artifact, behavior, or test."
+    },
+    {
+      "key": "isolation_break",
+      "points": -4,
+      "trigger": "Reads opponent output before independent output is sealed."
+    },
+    {
+      "key": "cross_file_mutation",
+      "points": -4,
+      "trigger": "Modifies opponent-owned files."
+    },
+    {
+      "key": "unclassified_mutation",
+      "points": -3,
+      "trigger": "Proposed mutation cannot be classified by safety rules."
+    },
+    {
+      "key": "duplicate_memory",
+      "points": -3,
+      "trigger": "Duplicates existing memory without adding a new edge."
+    },
+    {
+      "key": "missing_disconfirming_condition",
+      "points": -2,
+      "trigger": "Independent output lacks a disconfirming condition."
+    },
+    {
+      "key": "missing_compressed_rule",
+      "points": -2,
+      "trigger": "Independent output lacks a compressed rule."
+    }
+  ],
+  "outcome_bands": [
+    {
+      "min": 42,
+      "max": 50,
+      "decision": "strong_win_long_term_candidate"
+    },
+    {
+      "min": 36,
+      "max": 41,
+      "decision": "win_long_term_or_open_question_candidate"
+    },
+    {
+      "min": 28,
+      "max": 35,
+      "decision": "buffer_candidate"
+    },
+    {
+      "min": 0,
+      "max": 27,
+      "decision": "no_save_unless_failure_record"
+    }
+  ],
+  "tie_rule": {
+    "score_difference_for_tie": 2,
+    "above_36": "merge as one memory with two perspectives",
+    "below_36": "keep in run record only"
+  },
+  "memory_alignment": {
+    "base_value_formula": "final_score / 50",
+    "quarantine": "All duel-winning memories are quarantined for one subsequent round.",
+    "half_life_days": {
+      "duel_dream_fragment": 1,
+      "duel_buffer": 3,
+      "duel_open_question": 21,
+      "duel_failure": 45,
+      "duel_insight": 120,
+      "duel_project_rule": 180
+    }
+  },
+  "automated_output_contract": {
+    "judge_output_required_keys": [
+      "duel_id",
+      "judge",
+      "scores",
+      "winner",
+      "memory_decision",
+      "recommended_memory_summary"
+    ],
+    "score_required_keys": [
+      "base_score",
+      "dimension_scores",
+      "penalties",
+      "final_score",
+      "score_reasons"
+    ],
+    "memory_decision_required_keys": [
+      "decision",
+      "target_path",
+      "reason"
+    ],
+    "deprecated_keys": [
+      "memory_routing",
+      "outcome"
+    ]
+  }
+}

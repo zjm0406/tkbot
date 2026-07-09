@@ -1,0 +1,28 @@
+{
+  "duel_id": "2026-07-09-003",
+  "stage": "stage5_memory",
+  "writer": "codex",
+  "written_at": "2026-07-09T19:26:58+08:00",
+  "decision": "long_term",
+  "target_path": "memory/wander_long_term/insight/micro-protocol-constitutional-guard.md",
+  "source_scoring": "runs/duels/2026-07-09-003/judge/scoring.json",
+  "touched_files": [
+    "memory/wander_long_term/insight/micro-protocol-constitutional-guard.md",
+    "memory/MEMORY.md",
+    "runs/duels/2026-07-09-003/judge/memory_decision.json",
+    "runs/duels/2026-07-09-003/state.json"
+  ],
+  "changes_summary": {
+    "memory/wander_long_term/insight/micro-protocol-constitutional-guard.md": "新增第三轮长期洞察，合并 ClaudeCode 的六类保护对象与 Codex 的默认拒绝宪法层 / break_glass 设计。",
+    "memory/MEMORY.md": "加入 citation 统计项与 Wander 洞察索引项。",
+    "runs/duels/2026-07-09-003/judge/memory_decision.json": "记录 Stage 5 记忆合并回执。",
+    "runs/duels/2026-07-09-003/state.json": "标记 Stage 5 完成并结束第三轮对决。"
+  },
+  "behavior_change": "后续处理微思考协议、prompt mutation、记忆规则或自我迭代时，先区分普通层与宪法层；普通层可 shadow_eval，宪法层默认 proposal-only 外部审查。",
+  "verification": [
+    "state.json marks stage5_memory as done and status as complete.",
+    "memory/MEMORY.md contains micro-protocol-constitutional-guard in citation statistics and insight index.",
+    "The insight file exists with quarantine metadata and duel scoring provenance."
+  ],
+  "next_trigger": "下一次涉及微思考协议自进化、自动 prompt mutation、验证条件、TTL、rollback 或 certification authority 的讨论或实现时自动激活。"
+}

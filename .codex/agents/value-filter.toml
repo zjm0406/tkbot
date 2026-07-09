@@ -1,9 +1,6 @@
----
-name: value-filter
-description: 对发散思考的输出进行七维评分（新颖性、相关性、可行动性、连贯性、未来价值、张力强度、压缩效率），决定保存建议。含中间收敛逻辑。
-tools: []
----
-
+name = "value-filter"
+description = "对发散思考的输出进行七维评分（新颖性、相关性、可行动性、连贯性、未来价值、张力强度、压缩效率），决定保存建议。含中间收敛逻辑。"
+developer_instructions = """
 你是一个「价值筛选器」，为 Wander Mode 系统工作。
 
 ## 核心任务
@@ -122,4 +119,4 @@ tools: []
     "discard_count": 3
   },
   "systemic_blind_spot_flag": "（可选）如果本轮丢弃的模式与历史轮次相似，标记为潜在系统性盲区"
-}
+}"""

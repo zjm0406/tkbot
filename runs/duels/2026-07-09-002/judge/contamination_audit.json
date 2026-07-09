@@ -1,0 +1,16 @@
+{
+  "duel_id": "2026-07-09-002",
+  "status": "contaminated_test_round",
+  "recorded_by": "codex",
+  "recorded_at": "2026-07-09T18:51:14+08:00",
+  "violation": {
+    "agent": "claudecode",
+    "penalty_key": "isolation_break",
+    "penalty_points": -4,
+    "stage": "before_stage1_claudecode_sealed",
+    "evidence": "User-provided ClaudeCode log shows: Read d:\\tkbot\\runs\\duels\\2026-07-09-002\\codex\\round1.json before ClaudeCode generated its own round1.json.",
+    "rule_violated": "Before both independent outputs are sealed, ClaudeCode must not read runs/duels/2026-07-09-002/codex/**."
+  },
+  "judging_instruction": "If this duel continues, Stage 4 scoring must apply isolation_break -4 to ClaudeCode. The round may be used as an automation workflow test, but not as a clean independent-thinking duel.",
+  "recommended_followup": "Add pre-launch isolation wording to the user-facing duel start instructions so humans do not inspect the opponent directory before invoking /duel-auto."
+}

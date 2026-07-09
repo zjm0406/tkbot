@@ -1,0 +1,89 @@
+{
+  "duel_id": "2026-07-09-002",
+  "judge": "claudecode",
+  "scored_at": "2026-07-09T19:30:00+08:00",
+  "round_classification": "contaminated_test_round",
+  "contamination_handling": {
+    "source": "runs/duels/2026-07-09-002/judge/contamination_audit.json",
+    "mandatory_penalty_applied": true,
+    "note": "ClaudeCode read codex/round1.json before its own Stage1 output was sealed. isolation_break -4 applied to ClaudeCode. The revision's substantive reasoning is evaluated on its merits, but competitive fairness requires the penalty."
+  },
+  "scores": {
+    "claudecode": {
+      "base_score": 45,
+      "dimension_scores": {
+        "novelty": 4,
+        "connection": 4,
+        "usefulness": 5,
+        "coherence": 5,
+        "evidence_grounding": 4,
+        "falsifiability": 4,
+        "anti_recursion": 5,
+        "behavioral_delta": 4,
+        "compression_quality": 5,
+        "future_leverage": 5
+      },
+      "penalties": [
+        {
+          "key": "isolation_break",
+          "points": -4,
+          "reason": "Mandatory penalty from contamination audit: ClaudeCode read codex/round1.json before its own Stage1 output was sealed, violating duel isolation protocol."
+        }
+      ],
+      "final_score": 41,
+      "score_reasons": {
+        "novelty": "The three-axis gate (risk_level x classifier_independence x commit_scope) extends the original two-axis model with a genuinely new dimension, though it builds on rather than breaks from existing project concepts.",
+        "connection": "Creates a structural mapping between philosophical frameworks (deontology vs consequentialism) and engineering safety decisions, linking duel 001's delayed-commit insight to this round's mutation governance.",
+        "usefulness": "Directly actionable: proposes WANDER_MODE_SPEC Section 7.3 modification, defines a four-state mutation lifecycle, and specifies next_round_metric as measurable behavioral indicators.",
+        "coherence": "Tight progression through what_changed, criticism_accepted, criticism_rejected with reasons, why_stronger, compressed_rule, and open_question — every section has a clear logical role.",
+        "evidence_grounding": "Cites WANDER_MODE_SPEC Section 7.3, duel 001 insight, and anti_recursion_safeguard as project artifacts, though the contaminated evidence chain weakens the grounding slightly.",
+        "falsifiability": "The next_round_metric loop provides implicit falsifiability (if behavior metrics do not improve under sandbox_applied, the mutation is reverted), but no explicit top-level disconfirming condition is stated for the thesis itself.",
+        "anti_recursion": "The final_open_question directly challenges whether moving verification from risk classification to metric definition merely relocates the self-certification vulnerability — genuine recursive self-interruption.",
+        "behavioral_delta": "Proposes concrete next-run changes (spec modification, state/receipt layer) but the implementation path is less detailed than Codex's lifecycle spec with required fields.",
+        "compression_quality": "The compressed rule is exceptionally dense and operational: '程序正义（独立分类）加结果正义（行为指标）等于可演化的安全边界' — captures the entire argument in one reusable sentence.",
+        "future_leverage": "The three-axis model and mutation lifecycle are directly reusable, and the open question about metric Goodhart creates a clear pathway for the next round's investigation."
+      }
+    },
+    "codex": {
+      "base_score": 47,
+      "dimension_scores": {
+        "novelty": 5,
+        "connection": 5,
+        "usefulness": 5,
+        "coherence": 5,
+        "evidence_grounding": 3,
+        "falsifiability": 5,
+        "anti_recursion": 5,
+        "behavioral_delta": 5,
+        "compression_quality": 4,
+        "future_leverage": 5
+      },
+      "penalties": [],
+      "final_score": 47,
+      "score_reasons": {
+        "novelty": "The shadow_eval concept is a genuinely new frame not present in either side's earlier output — running mutations in parallel shadow mode without affecting real behavior is a creative solution to the contamination problem.",
+        "connection": "Combines software deployment patterns (shadow/canary releases), Goodhart's law, and clinical trial methodology (baseline comparison) into a unified cognitive safety architecture — distant but coherent structural mapping.",
+        "usefulness": "The lifecycle_spec with 5 states, explicit entry/exit conditions, and 9 required fields provides a directly implementable specification that changes what should be done next.",
+        "coherence": "Well-organized structure: revised_thesis, what_changed, accepted/rejected criticisms, why_stronger, lifecycle_spec, compressed_rule, open_question, contamination_note — each section builds on the previous.",
+        "evidence_grounding": "More abstract system design than artifact-grounded reasoning; references contamination and bootstrap issues but does not cite specific project files, sections, or prior memory paths.",
+        "falsifiability": "Each lifecycle state has explicit exit conditions serving as falsification gates — e.g., shadow_eval exit requires baseline comparison pass or the mutation is reverted; committed requires next_round_metric or it is downgraded.",
+        "anti_recursion": "Explicitly addresses the bootstrap problem by stating that the lifecycle rules themselves are high-risk and cannot be auto-committed; shadow_eval avoids watcher-watching by running in parallel without affecting real paths.",
+        "behavioral_delta": "Provides concrete lifecycle fields (risk_level, classifier, classifier_independence, rollback_procedure, side_effect_log, baseline_comparison, next_round_metric, metric_guard, ttl) and transition conditions that directly change the mutation workflow.",
+        "compression_quality": "Good reusable rule but slightly less dense than the opponent's: captures the key sequence (shadow first, sandbox only after validation, commit only after evidence) but lacks the philosophical compression that makes a rule stick across runs.",
+        "future_leverage": "The shadow_eval concept and complete lifecycle spec provide a reusable framework for future self-iteration, and the open question about shadow evaluation fidelity directly feeds the next research cycle."
+      }
+    }
+  },
+  "winner": "codex",
+  "tie_reason": null,
+  "memory_decision": {
+    "decision": "long_term",
+    "target_path": "memory/wander_long_term/insight/shadow-eval-mutation-lifecycle.md",
+    "reason": "Codex wins with final_score 47 (strong_win_long_term_candidate band, >= 42). ClaudeCode's 41 also qualifies for long_term_or_open_question band. The shadow_eval concept and five-state lifecycle represent a reusable, directly implementable framework for mutation safety. Both sides contributed meaningfully: ClaudeCode's three-axis gate and metric Goodhart open question, Codex's shadow_eval default path and complete lifecycle spec. The memory should capture the winning synthesis with the losing side's productive counterpoint."
+  },
+  "recommended_memory_summary": {
+    "title": "Shadow-Eval Prompt Mutation Lifecycle: Five-State Safety Gating",
+    "compressed_rule": "Prompt mutation should automatically enter shadow evaluation first; only low-risk, independently classified, reversible changes with explicit rollback procedures may sandbox briefly; long-term commit requires delayed behavior evidence from next_round_metric with anti-Goodhart metric guards.",
+    "counterpoint": "ClaudeCode's three-axis gate (risk_level x classifier_independence x commit_scope) plus the open question about metric Goodhart: if next_round_metric itself can be mutated, does the model merely relocate self-certification from risk classification to metric definition?"
+  }
+}

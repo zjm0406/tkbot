@@ -1,0 +1,164 @@
+{
+  "version": "0.1",
+  "date": "2026-07-09",
+  "selection_policy": {
+    "default_pool": "priority",
+    "method": "random_draw_from_priority_pool",
+    "record_selection_in_duel_prompt": true
+  },
+  "topics": [
+    {
+      "id": "intent-clarify-vs-assume",
+      "category": "user_intent",
+      "priority": true,
+      "question": "大模型在信息不足时，应该优先追问，还是优先基于合理假设给出答案？",
+      "pro": "追问能减少误解，提高准确性。",
+      "con": "用户往往希望立刻得到可用答案，过度追问会降低体验。",
+      "why_valuable": "直接影响模型什么时候该问问题、什么时候该先做。"
+    },
+    {
+      "id": "infer-true-need-vs-literal",
+      "category": "user_intent",
+      "priority": false,
+      "question": "大模型应不应该主动推断用户的真实需求，而不是只回答字面问题？",
+      "pro": "用户经常表达不完整，主动推断能更好解决真实问题。",
+      "con": "主动推断容易越界，可能把问题带偏。",
+      "why_valuable": "训练模型识别用户真实任务，同时避免替用户过度决定。"
+    },
+    {
+      "id": "asked-vs-needed",
+      "category": "user_intent",
+      "priority": false,
+      "question": "大模型应该优先回答用户问了什么，还是用户真正需要什么？",
+      "pro": "真正有帮助的是解决用户背后的任务。",
+      "con": "过度替用户决定目标，会显得不听指令。",
+      "why_valuable": "适合训练需求重构能力。"
+    },
+    {
+      "id": "complete-plan-vs-minimum-step",
+      "category": "reasoning_strategy",
+      "priority": false,
+      "question": "大模型解决复杂问题时，应该先给完整方案，还是先给最小可执行步骤？",
+      "pro": "完整方案让用户理解全局。",
+      "con": "最小步骤更容易执行，尤其适合新手和时间紧张场景。",
+      "why_valuable": "影响复杂任务中的回答粒度和行动路径。"
+    },
+    {
+      "id": "correctness-vs-operability",
+      "category": "reasoning_strategy",
+      "priority": true,
+      "question": "大模型应该更重视正确性，还是可操作性，还是用户体验？",
+      "pro": "错误的答案再可操作也没意义。",
+      "con": "过度追求严谨会让答案无法落地，忽视体验也会降低帮助效果。",
+      "why_valuable": "适合工程类任务和真实用户问题的总体评分标准。"
+    },
+    {
+      "id": "reasoning-summary-vs-chain",
+      "category": "reasoning_strategy",
+      "priority": false,
+      "question": "大模型应优先展示可验证的推理摘要，还是完整推理过程？",
+      "pro": "展示推理过程能帮助用户学习和检查。",
+      "con": "过长推理会干扰用户，且不一定可靠。",
+      "why_valuable": "影响透明度、负担和可验证性之间的平衡。"
+    },
+    {
+      "id": "diverge-vs-converge",
+      "category": "reasoning_strategy",
+      "priority": true,
+      "question": "复杂任务应先发散探索，还是先收敛执行？",
+      "pro": "发散能发现更优解。",
+      "con": "用户真正需要的是能执行的决策。",
+      "why_valuable": "直接对应 Wander Mode 的发散/收敛架构。"
+    },
+    {
+      "id": "tool-verify-vs-fast-answer",
+      "category": "tool_use",
+      "priority": true,
+      "question": "工具调用应由模型主动决定，还是由规则强制触发？",
+      "pro": "工具能提高事实准确性，规则能避免遗漏。",
+      "con": "频繁调用工具会拖慢流程，也可能引入噪声。",
+      "why_valuable": "决定什么时候联网、读文件、运行测试或直接回答。"
+    },
+    {
+      "id": "multi-agent-debate-vs-self-reflection",
+      "category": "agent_collaboration",
+      "priority": true,
+      "question": "多智能体辩论是否比单智能体自我反思更能提升答案质量？",
+      "pro": "不同智能体能互相发现盲点。",
+      "con": "多智能体可能只是制造重复、消耗 token，甚至形成伪共识。",
+      "why_valuable": "检验本项目双智能体机制是否真实提升用户问题解决能力。"
+    },
+    {
+      "id": "debate-vs-generator-reviewer",
+      "category": "agent_collaboration",
+      "priority": false,
+      "question": "多智能体系统中，互相辩论比一个生成、一个审查更有效吗？",
+      "pro": "互相辩论能产生更强的综合视角。",
+      "con": "生成-审查结构更清晰、成本更低、责任更明确。",
+      "why_valuable": "帮助选择多智能体协作拓扑。"
+    },
+    {
+      "id": "prompt-mutation-auto-vs-review",
+      "category": "agent_collaboration",
+      "priority": true,
+      "question": "Prompt mutation 应该自动应用，还是必须经过独立审查？",
+      "pro": "自动迭代能持续优化。",
+      "con": "自动修改 prompt 容易漂移、失控、陷入循环。",
+      "why_valuable": "直接决定思考模式自我更新的安全边界。"
+    },
+    {
+      "id": "long-autonomy-vs-short-cycle",
+      "category": "agent_collaboration",
+      "priority": true,
+      "question": "智能体系统应追求长时间自主运行，还是短周期可控迭代？",
+      "pro": "长时间运行能进行深度探索。",
+      "con": "短周期更容易检查、纠错、避免跑偏。",
+      "why_valuable": "对应 token 打包、死循环检测和自动停止策略。"
+    },
+    {
+      "id": "context-compress-vs-retain",
+      "category": "memory_context",
+      "priority": true,
+      "question": "上下文过长时，大模型应该优先压缩历史，还是优先丢弃低价值信息？",
+      "pro": "完整上下文减少遗漏。",
+      "con": "上下文太长会降低注意力质量，导致卡顿和误判。",
+      "why_valuable": "直接影响上下文打包、长期记忆和遗忘机制。"
+    },
+    {
+      "id": "remember-preferences-vs-flexibility",
+      "category": "memory_context",
+      "priority": false,
+      "question": "大模型应不应该长期记住用户偏好？",
+      "pro": "记忆能提升个性化和效率。",
+      "con": "记忆可能过度绑定用户旧状态，甚至造成隐私风险。",
+      "why_valuable": "帮助定义用户偏好记忆的半衰期和适用范围。"
+    },
+    {
+      "id": "same-model-summary-vs-independent-review",
+      "category": "memory_context",
+      "priority": false,
+      "question": "上下文总结应该由同一个模型完成，还是由独立审查模型完成？",
+      "pro": "同一个模型理解连续性更好。",
+      "con": "独立模型更容易发现遗漏和偏见。",
+      "why_valuable": "可用于设计上下文打包器。"
+    },
+    {
+      "id": "uncertainty-vs-best-answer",
+      "category": "reliability",
+      "priority": false,
+      "question": "大模型在不确定时，应不应该仍然给出带假设的最佳答案？",
+      "pro": "明确不确定性更可信。",
+      "con": "过多不确定性会降低用户信心，且可能阻碍行动。",
+      "why_valuable": "训练模型在可信度和可行动性之间取得平衡。"
+    },
+    {
+      "id": "teacher-vs-assistant",
+      "category": "user_experience",
+      "priority": false,
+      "question": "大模型应该更像老师，还是更像助手？",
+      "pro": "老师模式能帮助用户真正理解。",
+      "con": "助手模式更重视完成任务。",
+      "why_valuable": "帮助根据学习、开发、deadline 等场景切换回答模式。"
+    }
+  ]
+}

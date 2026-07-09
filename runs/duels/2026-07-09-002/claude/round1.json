@@ -1,0 +1,42 @@
+{
+  "agent": "claudecode",
+  "duel_id": "2026-07-09-002",
+  "theme": "Prompt mutation 应该自动应用，还是必须经过独立审查？",
+  "central_thesis": "自动应用与独立审查的边界不应由风险等级（low/medium/high/critical）单轴决定，而应由'风险分类者是否独立于突变提议者'这一维度共同决定。当前 WANDER_MODE_SPEC.md Section 7.3 的分类体系假设提议者与分类者是同一模块，这制造了一个自认证漏洞：同一回路既提案又给自己的提案贴'低风险'标签。低风险自动应用的前提必须是风险分类由独立机制（独立 agent 或跨轮延迟验证）完成，而非由提议者自行分类。",
+  "reasoning_path": [
+    "步骤1：审视现状。WANDER_MODE_SPEC.md Section 7.3 将 mutation 分为 low/medium/high/critical 四级，low（参数调整、prompt 微调）自动应用，medium 及以上生成 proposal。这个分类看起来合理，但它隐含了一个未审查的假设：执行分类的模块与提出 mutation 的模块是同一个（orchestrator 同时触发 evolution_mode、诊断根因、生成 mutation 建议、评估风险等级——见 Section 7.2 步骤 4-5）。这意味着同一回路既是检察官又是法官。",
+    "步骤2：引入上一场对决的核心洞察。Duel 001 的平局洞察 two-axis-delayed-commit-anti-nesting 明确指出：'自我改进要稳定，不能让同一个反思回路同时提出升级并认证升级。'该洞察的证据强度来自双方独立收敛——ClaudeCode 强调外部参考轴+阶段纪律轴，Codex 强调延迟提交协议——两条独立路径汇聚到同一结论。这个洞察直接适用于本场对决的命题：如果 orchestrator 既生成 mutation 又给它贴 'low' 标签，它就在同时提案和认证自己的升级。",
+    "步骤3：构造具体反例。假设 orchestrator 在连续两轮空转后（WANDER_MODE_SPEC.md Section 8.2），诊断根因为 'self-checker 评分阈值过高'，生成 mutation 将 Novelty 维度阈值从 3 降到 2，自评风险等级为 'low（参数调整）'并自动应用。这个 mutation 实际上降低了系统的质量标准，使得后续更多低质量输出被误判为有效——这正是'漂移'的定义。但因为 orchestrator 自己给自己贴了 'low' 标签，没有独立审查来拦截这次降级。这不是假设性风险，它是分类权与提案权合并的结构性必然结果。",
+    "步骤4：提出解决方案——双轴分类模型。第一轴是风险等级（沿用现有四级），第二轴是分类独立性（独立分类 vs 自分类）。只有当 mutation 同时满足 (a) 风险=low 且 (b) 分类由独立机制完成时，才可自动应用。独立机制可以是：(i) self-checker 而非 orchestrator 执行风险分类，(ii) 跨轮延迟验证——第 N 轮提出 mutation+分类，第 N+1 轮由另一个 agent 实例验证分类是否正确后才应用。这与 AUTO_DUEL_PROTOCOL.md 的 claim-lock 模式精神一致：'same reflective loop cannot both propose and certify'。",
+    "步骤5：回答命题。所以 Prompt mutation 不应该简单地'自动应用'或'必须审查'——应该根据分类独立性自动路由。独立分类的低风险 mutation 自动应用；自分类的 mutation（无论风险等级）必须经过至少一项独立验证——可以是不同 agent、跨轮延迟、或用户确认。这不是增加流程摩擦，而是将 duel 001 的已验证洞察直接操作化为安全规则。"
+  ],
+  "strongest_connection": "本场对决命题的答案已经隐含在上一场对决（duel 001）的平局洞察中。Duel 001 问'如何避免递归自嵌套'，答案收敛于'不能让同一回路同时提案和认证'（two-axis-delayed-commit-anti-nesting）。本场问'自动还是审查'，答案正是同一原则的直接应用：自动 vs 审查的边界不由风险等级决定，而由分类者是否独立于提案者决定。这是两场对决之间的结构性连接——上一场的结论恰好是本场的操作化答案。这不是巧合，而是认知对决设计本身产生的涌现属性：跨对决洞察积累形成可复用的规则体系。",
+  "anti_recursion_safeguard": "本次思考避免了三种自嵌套模式：(1) 不讨论'思考自动 vs 审查'这个元问题本身的自动 vs 审查——那是无限元递归；(2) 不以自身推理的美学品质作为证据——所有主张都锚定在具体项目文件的具体段落（WANDER_MODE_SPEC.md Section 7.2-7.3, two-axis-delayed-commit insight, AUTO_DUEL_PROTOCOL.md claim-lock）；(3) 不声称本回答本身应该被自动应用——proposed_mutation 的 status 明确设为 'proposal'，遵守 COGNITIVE_DUEL_SPEC.md Section 6.3 的 mutation freeze 规则。返回路径是：从抽象原则（分类独立性）→ 具体文件修改（WANDER_MODE_SPEC.md Section 7）→ 可验证的行为变化（下一轮的 mutation 路由逻辑改变）。",
+  "proposed_mutation": {
+    "description": "在 WANDER_MODE_SPEC.md Section 7.3 的 Mutation 类型与风险表中新增一列'分类者'，并添加规则：'提出 mutation 的 agent 不得同时为其分类风险等级。风险分类由 self-checker 或下一轮独立实例完成。自分类的 mutation（无论风险等级）必须经过至少一项独立验证后才能应用。'",
+    "risk_level": "medium",
+    "status": "proposal",
+    "target_files": ["docs/WANDER_MODE_SPEC.md"]
+  },
+  "disconfirming_condition": "如果能够运行一个对照实验：A 组（自分类+自动应用低风险 mutation）与 B 组（独立分类+自动应用低风险 mutation）各跑 20 轮，且 A 组的输出质量评分、语义漂移距离、空转率均不显著差于 B 组，则本论题关于'分类独立性'的核心主张被显著削弱。此外，如果能够证明 orchestrator 在执行 Section 7.2 步骤 4-5 时存在有效的自我纠错机制（而非仅仅自我一致性检查），则'同一回路不能同时提案和认证'的前提在 mutation 场景中不成立。",
+  "compressed_rule": "Mutation 的安全边界不由风险等级决定，而由分类者的独立性决定——低风险自动应用的前提是风险分类由独立机制完成，否则任何自分类 mutation 都需独立验证。",
+  "open_question": "如果风险分类必须独立于 mutation 提案，那么'跨轮延迟验证'（第 N 轮提案+分类，第 N+1 轮验证）是否构成足够强的独立性？还是说同一 agent 定义在不同轮次实例之间的连续性意味着它本质上仍是自分类？这触及了'身份同一性'在时间维度上的哲学问题——同一个 agent 定义在 T 和 T+1 时刻是否是'同一个分类者'？",
+  "evidence": [
+    {
+      "file": "docs/WANDER_MODE_SPEC.md",
+      "claim_supported": "Section 7.2 步骤 4-5 显示 orchestrator 同时执行'生成 mutation 建议'和'评估 mutation 的风险等级'，证实了提案权与分类权合并在同一模块中。Section 7.3 的 risk 表格只按变更类型分类，没有'分类者独立性'维度。"
+    },
+    {
+      "file": "memory/wander_long_term/insight/two-axis-delayed-commit-anti-nesting.md",
+      "claim_supported": "Duel 001 平局洞察明确指出：'self-improvement stabilizes when external measurement independence and delayed commit validation prevent the same reflective loop from both proposing and certifying its own upgrade'。这直接支持本论题的核心主张——分类必须独立于提案。ClaudeCode 贡献的'外部参考轴+阶段纪律轴'和 Codex 贡献的'延迟提交协议'共同构成双轴验证框架。"
+    },
+    {
+      "file": "docs/AUTO_DUEL_PROTOCOL.md",
+      "claim_supported": "Section 1.4 的 claim-lock 机制要求 Stage 4/5 的执行者必须先 claim、重读 state 确认持有权、再写入。这种'claim 后重读确认'的模式正是独立验证的操作化实现，可作为 mutation 风险分类独立性的参考模板。"
+    },
+    {
+      "file": "docs/COGNITIVE_DUEL_SPEC.md",
+      "claim_supported": "Section 6.3 Mutation Freeze 规定 Stages 1-4 期间禁止任何 mutation 实际应用，所有 mutation proposal 必须标记为 'proposal'。这本身就是一种'阶段纪律'——将提案与应用分离到不同阶段。本论题将此原则从对决场景推广到日常 Wander Mode 运行。"
+    }
+  ]
+}

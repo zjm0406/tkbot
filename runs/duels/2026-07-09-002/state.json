@@ -1,0 +1,66 @@
+{
+  "duel_id": "2026-07-09-002",
+  "theme": "Prompt mutation 应该自动应用，还是必须经过独立审查？",
+  "topic_id": "prompt-mutation-auto-vs-review",
+  "topic_bank": "data/cognitive_duel_topics.json",
+  "status": "complete",
+  "round_classification": "contaminated_test_round",
+  "contamination": {
+    "is_contaminated": true,
+    "recorded_at": "2026-07-09T18:51:14+08:00",
+    "audit_path": "runs/duels/2026-07-09-002/judge/contamination_audit.json",
+    "mandatory_penalty": {
+      "agent": "claudecode",
+      "key": "isolation_break",
+      "points": -4
+    }
+  },
+  "stages": {
+    "stage1": {
+      "claudecode": "done",
+      "codex": "done"
+    },
+    "stage2": {
+      "claudecode": "done",
+      "codex": "done"
+    },
+    "stage3": {
+      "claudecode": "done",
+      "codex": "done"
+    },
+    "stage4_judge": "done",
+    "stage5_memory": "done"
+  },
+  "locks": {
+    "stage4_judge": {
+      "owner": "codex",
+      "token": "2026-07-09-002:stage4:codex:2026-07-09T19:10:02+08:00",
+      "claimed_at": "2026-07-09T19:10:02+08:00",
+      "expires_at": "2026-07-09T19:20:02+08:00"
+    },
+    "stage5_memory": {
+      "owner": "claudecode",
+      "token": "2026-07-09-002:stage5:claudecode:2026-07-09T18:59:18+08:00",
+      "claimed_at": "2026-07-09T18:59:18+08:00",
+      "expires_at": "2026-07-09T19:09:18+08:00"
+    }
+  },
+  "wait_counts": {
+    "claudecode": 0,
+    "codex": 0
+  },
+  "allowed_context": [
+    "runs/duels/2026-07-09-002/DUEL_PROMPT.md",
+    "docs/WANDER_MODE_SPEC.md",
+    "docs/COGNITIVE_DUEL_SPEC.md",
+    "docs/AUTO_DUEL_PROTOCOL.md",
+    "memory/MEMORY.md",
+    "memory/wander_long_term/insight/two-axis-delayed-commit-anti-nesting.md",
+    "data/cognitive_duel_rubric.json",
+    "data/cognitive_duel_topics.json"
+  ],
+  "started_at": "2026-07-09T18:44:39+08:00",
+  "completed_at": "2026-07-09T19:30:00+08:00",
+  "last_progress_at": "2026-07-09T19:30:00+08:00",
+  "last_updated": "2026-07-09T19:30:00+08:00"
+}

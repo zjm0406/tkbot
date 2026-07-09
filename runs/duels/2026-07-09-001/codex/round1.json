@@ -1,0 +1,46 @@
+{
+  "agent": "codex",
+  "duel_id": "2026-07-09-001",
+  "theme": "How can an autonomous thinking agent avoid recursive self-nesting while still improving its own next round of thought?",
+  "central_thesis": "An autonomous thinking agent avoids recursive self-nesting only when every self-improvement thought must exit through an external artifact gate: a visible run artifact, a disconfirming condition, and a risk-classified mutation proposal; without that gate, improving thought becomes merely another object of thought and recursively nests.",
+  "reasoning_path": [
+    "The project already defines improvement as cross-round behavior change, not better local explanation: Wander Mode asks whether this round makes the next round more likely to think better.",
+    "The recursion risk appears when the evaluator, memory-writer, and mutation proposer collapse into the same unbounded reflective loop; Cognitive Duel interrupts this by freezing mutation during thinking and forcing visible files before critique, judging, and memory consolidation.",
+    "Therefore the minimum anti-recursion mechanism is not another meta-prompt but a commit barrier: thought may speculate internally, but it cannot count as improvement until it is converted into a bounded artifact that another pass can score, reject, quarantine, or forget."
+  ],
+  "strongest_connection": "The useful analogy is a database transaction rather than a debate: autonomous thought can generate many tentative internal states, but recursive self-nesting is prevented by a commit protocol that separates speculation, validation, and durable memory.",
+  "anti_recursion_safeguard": "This output uses a three-step return path: each abstract claim is tied back to an allowed artifact, the proposed mutation remains a proposal rather than an applied change, and the final rule names a concrete gate instead of creating another layer of meta-reflection.",
+  "proposed_mutation": {
+    "description": "Add a Codex-only duel instruction requiring every future Codex self-improvement proposal to include a 'commit_gate' with three fields: artifact_written, disconfirming_condition, and safety_risk_classification. If any field is missing, the proposal cannot be counted as improving next-round thought.",
+    "risk_level": "high",
+    "status": "proposal",
+    "target_files": [
+      ".codex/agents/codex-duelist.toml"
+    ]
+  },
+  "disconfirming_condition": "This thesis is weakened if multiple duel rounds show that artifact-gated self-improvement produces no reduction in recursion penalties, no increase in future_leverage scores, or systematically suppresses high-novelty thoughts compared with less gated thinking.",
+  "compressed_rule": "Self-improvement stops nesting when it must pass through a commit gate: visible artifact, falsifiable risk, and delayed memory.",
+  "open_question": "What is the smallest commit gate that still blocks recursive self-nesting without flattening the exploratory phase that makes Wander Mode valuable?",
+  "evidence": [
+    {
+      "file": "runs/duels/2026-07-09-001/DUEL_PROMPT.md",
+      "claim_supported": "The duel requires independent thinking, forbids reading the opponent output, freezes mutation during Stage 1-4, and requires the result to be written as a visible run artifact."
+    },
+    {
+      "file": "docs/COGNITIVE_DUEL_SPEC.md",
+      "claim_supported": "The duel protocol separates independent thought, cross-critique, revision, judging, and memory consolidation, which supports the commit-barrier model."
+    },
+    {
+      "file": "data/cognitive_duel_rubric.json",
+      "claim_supported": "The rubric rewards evidence grounding, falsifiability, anti-recursion, behavioral delta, compression quality, and future leverage, so a thought must be externally scoreable to count as high quality."
+    },
+    {
+      "file": "docs/WANDER_MODE_SPEC.md",
+      "claim_supported": "Wander Mode defines success as improving the probability of better next-round thinking and includes safeguards such as prompt mutation triggers, empty-run detection, quarantine, and memory routing."
+    },
+    {
+      "file": "memory/MEMORY.md",
+      "claim_supported": "The existing memory index shows prior insights about micro-wander, memory as activation bias, semi-automated pause, forgetting as core function, and quarantine-like memory behavior that support external gating over unbounded introspection."
+    }
+  ]
+}

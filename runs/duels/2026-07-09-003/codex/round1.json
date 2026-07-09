@@ -1,0 +1,54 @@
+{
+  "agent": "codex",
+  "duel_id": "2026-07-09-003",
+  "theme": "微思考协议的自我进化应该有边界吗？如果有，边界在哪里？",
+  "central_thesis": "微思考协议可以自我进化，但边界必须划在“自我修正规则本身”之前：步骤 1-6 的低风险微调可进入 shadow_eval 或有限 sandbox，步骤 7 只能提出关于自身、验证条件、TTL、晋升/回滚规则的 proposal，不能自动修改、验证或 commit 自己的权限边界。",
+  "reasoning_path": [
+    "微思考协议不是完整 Wander Mode，而是每次回复用户前都会运行的底层认知检查；它的改动会影响所有后续回答，不只是某个模块的局部行为。",
+    "题目文件说明当前协议有 7 步，其中步骤 7 是协议自进化；这让协议拥有修改自身的入口，也让验证条件可能被被验证者改写。",
+    "对决#001 的延迟提交洞察要求同一反思回路不能同时提出并认证自己的升级；步骤 7 如果能修改自己的验证条件，就违反这条原则。",
+    "对决#002 沉淀的 shadow_applied / shadow_eval 思路适用于普通低风险 mutation，但微思考协议是认知基底，对它的自修改必须比普通 prompt mutation 更保守。",
+    "因此边界不是禁止自进化，而是分层授权：普通步骤可自动候选化和影子验证，协议自进化步骤及其门槛必须由协议外信号提交。"
+  ],
+  "strongest_connection": "微思考协议自进化类似宪法修正中的“不可自我废止条款”：普通条款可以试行修订，但修正程序本身不能被同一次修订降低门槛，否则所有边界都会被下一步绕开。",
+  "anti_recursion_safeguard": "本输出只提出 proposal，不修改 CLAUDE.md、AGENTS.md、memory 或任何协议文件；它把结论锚定到 DUEL_PROMPT.md 中的 7 步定义、CLAUDE.md 片段、对决#001 的延迟提交记忆和对决规范的 mutation freeze，而不是继续上升为无限元讨论。",
+  "proposed_mutation": {
+    "description": "为微思考协议新增 non_self_amendment_guard：步骤 7 可以为步骤 1-6 提出候选改动，并允许低风险项进入 shadow_eval；但步骤 7、验证条件、TTL、metric_guard、晋升/回滚规则、协议自进化权限本身只能生成 proposal，必须由外部对决、用户确认或独立审查提交。",
+    "risk_level": "high",
+    "status": "proposal",
+    "target_files": [
+      "CLAUDE.md",
+      "AGENTS.md",
+      "docs/WANDER_MODE_SPEC.md"
+    ]
+  },
+  "disconfirming_condition": "如果后续对照实验显示：允许步骤 7 自动修改自身权限和验证条件，并没有增加协议漂移、用户纠偏次数、空转率、回滚次数或回答负担，且比外部审查方案显著提高用户问题解决质量，那么本论题关于“自我修正规则必须锁住”的主张会被削弱。",
+  "compressed_rule": "微思考协议可自我进化，但不能自我降低自我进化的门槛：步骤 7 对普通步骤可 shadow_eval，对自身权限和验证规则只能 proposal。",
+  "open_question": "有没有一种足够轻量的协议外审查信号，能在不拖慢每次回答的前提下，判断微思考协议的 shadow_applied 步骤是否应该 committed？",
+  "evidence": [
+    {
+      "file": "runs/duels/2026-07-09-003/DUEL_PROMPT.md",
+      "claim_supported": "题目明确定义微思考协议是每次回复前执行的 7 步轻量级认知检查，并指出步骤 7 让协议拥有修改自己的能力。"
+    },
+    {
+      "file": "CLAUDE.md:75-99",
+      "claim_supported": "当前协议文本包含字面意图、隐含需求、长期价值、记忆激活、自反挑战、压缩自检、协议自进化，并记录步骤 5-7 处于 shadow_applied 状态。"
+    },
+    {
+      "file": "memory/wander_long_term/insight/two-axis-delayed-commit-anti-nesting.md",
+      "claim_supported": "已有洞察要求自我改进不能让同一反思回路同时提出并认证自己的升级，这直接约束步骤 7 的权限。"
+    },
+    {
+      "file": "memory/wander_long_term/insight/two-axis-temporal-anti-nesting.md",
+      "claim_supported": "双轴时间延迟反嵌套架构要求外部测量独立性和后来验证，支持把协议自进化提交权移到协议外或下一轮。"
+    },
+    {
+      "file": "docs/COGNITIVE_DUEL_SPEC.md",
+      "claim_supported": "对决规范要求 Stages 1-4 mutation freeze，说明自我改进候选应先作为 proposal，而不是在同轮直接应用。"
+    },
+    {
+      "file": "docs/AUTO_DUEL_PROTOCOL.md",
+      "claim_supported": "自动对决协议新增启动前隔离，说明协议边界必须覆盖 workflow 外的操作纪律；微思考协议自进化也需要类似的外部边界。"
+    }
+  ]
+}

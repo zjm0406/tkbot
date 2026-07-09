@@ -1,0 +1,24 @@
+{
+  "duel_id": "2026-07-09-002",
+  "writer": "claudecode",
+  "source_scoring_path": "runs/duels/2026-07-09-002/judge/scoring.json",
+  "decision": "long_term",
+  "touched_files": [
+    "memory/wander_long_term/insight/shadow-eval-mutation-lifecycle.md",
+    "memory/MEMORY.md",
+    "runs/duels/2026-07-09-002/judge/memory_decision.json",
+    "runs/duels/2026-07-09-002/state.json"
+  ],
+  "changes_summary": {
+    "memory/wander_long_term/insight/shadow-eval-mutation-lifecycle.md": "Created new wander_insight from duel 2026-07-09-002. Captures Codex's winning synthesis: five-state prompt mutation lifecycle (candidate → shadow_eval → sandbox_applied → committed → reverted) with shadow evaluation as the default automatic path. Includes ClaudeCode's three-axis gate counterpoint and the metric Goodhart open question. Score 48 by Codex judge, contaminated test round, status quarantine (1 round).",
+    "memory/MEMORY.md": "Added shadow-eval-mutation-lifecycle to citation statistics table and Wander insights index section.",
+    "runs/duels/2026-07-09-002/judge/memory_decision.json": "This execution receipt.",
+    "runs/duels/2026-07-09-002/state.json": "Updated stages.stage5_memory to 'done', status to 'complete', set completed_at timestamp."
+  },
+  "behavior_change": "Future runs now have access to a concrete five-state mutation lifecycle spec (shadow_eval as default automatic path, not direct sandbox_applied). The next duel or wander round may reference this insight when evaluating prompt mutation proposals. The quarantine status means this insight cannot be selected as a seed by seed-extractor for 1 round — it must prove its value through passive citation before becoming active seed material.",
+  "verification": {
+    "memory_file_exists": true,
+    "memory_index_updated": true,
+    "state_marked_complete": true
+  }
+}

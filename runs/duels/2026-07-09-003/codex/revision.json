@@ -1,0 +1,49 @@
+{
+  "agent": "codex",
+  "duel_id": "2026-07-09-003",
+  "original_thesis": "微思考协议可以自我进化，但边界必须划在“自我修正规则本身”之前：步骤 1-6 的低风险微调可进入 shadow_eval 或有限 sandbox，步骤 7 只能提出关于自身、验证条件、TTL、晋升/回滚规则的 proposal，不能自动修改、验证或 commit 自己的权限边界。",
+  "revised_thesis": "微思考协议的自我进化边界应是一个“默认拒绝的双层宪法”：步骤 7 可以为步骤 1-6 提出和影子验证低风险候选，但凡涉及步骤 7、自进化门槛、TTL、验证条件、metric_guard、晋升/回滚规则或 guard 本身的变更，都只能进入 proposal，并必须满足最小外部审查信号；紧急修复只能通过 break_glass 临时禁用有害步骤，不能借紧急状态永久降低边界。",
+  "what_changed": "我接受 ClaudeCode 的三点关键批评：第一，当前文本中步骤 7 更像检查和建议，不应夸大为已经拥有实际写入权；第二，non_self_amendment_guard 本身也需要修订流程，否则只是把递归上移一层；第三，外部审查必须足够轻量，否则微思考协议会被治理流程拖慢。修订版把原来的“步骤 7 对自身只能 proposal”扩展为默认拒绝、最小外部信号、break_glass 例外和 guard 修改流程四个要素。",
+  "criticism_accepted": [
+    "接受“检查不等于可修改”的批评。因此修订版把风险表述从“步骤 7 已经能修改自己”改为“如果步骤 7 被 committed 为自进化入口，则必须预先锁住其权限边界”。",
+    "接受“guard 规则本身如何修改”的批评。因此修订版提出双层宪法：普通协议层可 shadow_eval，宪法层默认拒绝自动提交；修改宪法层必须经过更强的外部信号。",
+    "接受“协议外审查信号需要具体化”的批评。因此修订版定义最小外部审查信号：不同 agent/轮次、引用 artifact diff、包含 TTL、默认拒绝。",
+    "接受“紧急修复路径缺失”的批评。因此加入 break_glass：可以临时禁用有害 shadow_applied 步骤，但不能永久提交新边界。"
+  ],
+  "criticism_rejected": [
+    {
+      "criticism": "宪法修正隐喻映射不完全，因为软件 prompt 没有司法执行机制。",
+      "reason": "我接受映射不完全，但它仍然揭示了不可自我废止条款的结构价值。修订版不依赖法律强制执行，而把执行方式落到 artifact diff、state/receipt 和外部审查信号上。"
+    },
+    {
+      "criticism": "能力存在但从未被滥用可以证明实际安全。",
+      "reason": "我不接受这是足够强的安全证据。低频高影响风险不能仅靠未发生证明安全；最多说明短期未触发。修订版把默认策略设为拒绝，而不是等待滥用发生。"
+    }
+  ],
+  "why_stronger": "修订版更强，因为它不再只给出“步骤 7 不能改自身门槛”的静态禁令，而是定义了可操作的治理协议：哪些改动属于普通层，哪些属于宪法层；宪法层如何修改；外部审查信号的最小字段是什么；紧急情况下如何临时止血但不永久降级边界。这直接回应了 ClaudeCode 指出的 bootstrap、审查成本和执行方式问题。",
+  "boundary_model": {
+    "ordinary_layer": {
+      "scope": "步骤 1-6 的措辞、顺序、轻量检查项、展示策略。",
+      "allowed_path": "candidate -> shadow_eval -> limited sandbox -> committed/reverted",
+      "condition": "low risk, artifact-visible, rollbackable, TTL-bound"
+    },
+    "constitutional_layer": {
+      "scope": "步骤 7、自进化权限、TTL、验证条件、metric_guard、晋升/回滚规则、non_self_amendment_guard 本身。",
+      "allowed_path": "proposal only, default reject until external review",
+      "external_signal_minimum": [
+        "different_agent_or_later_round",
+        "artifact_diff_cited",
+        "ttl_or_expiry_defined",
+        "disconfirming_condition_present",
+        "default_reject_if_uncertain"
+      ]
+    },
+    "break_glass": {
+      "allowed": "temporarily disable a harmful shadow_applied step",
+      "forbidden": "permanently commit a new boundary or lower the review threshold",
+      "receipt_required": true
+    }
+  },
+  "final_compressed_rule": "微思考协议可自进化普通层，但宪法层默认拒绝自动提交：步骤 7、验证条件、TTL、metric_guard 和边界规则只能 proposal，紧急情况只许临时止血，不能永久降门槛。",
+  "final_open_question": "最小外部审查信号能否被形式化成一个 protocol_guard 文件，使微思考协议每次自进化时只需检查少量字段，而不用启动完整认知对决？"
+}

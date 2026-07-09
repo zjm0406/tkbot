@@ -1,0 +1,77 @@
+{
+  "duel_id": "2026-07-09-003",
+  "judge": "codex",
+  "scored_at": "2026-07-09T19:25:30+08:00",
+  "scores": {
+    "claudecode": {
+      "base_score": 48,
+      "dimension_scores": {
+        "novelty": 5,
+        "connection": 5,
+        "usefulness": 5,
+        "coherence": 5,
+        "evidence_grounding": 4,
+        "falsifiability": 4,
+        "anti_recursion": 5,
+        "behavioral_delta": 5,
+        "compression_quality": 5,
+        "future_leverage": 5
+      },
+      "penalties": [],
+      "final_score": 48,
+      "score_reasons": {
+        "novelty": "The revision turns a single boundary into a six-object non-self-amendment guard and a three-layer permission model.",
+        "connection": "It maps delayed validation, proposal load control, protected-object lists, and protocol-outside certification into one coherent constitutional model.",
+        "usefulness": "It gives concrete protected objects and dual pipelines that can directly guide the next micro-thinking protocol update.",
+        "coherence": "The revision clearly explains what changed, which criticisms were accepted, and why the revised boundary is stronger.",
+        "evidence_grounding": "It relies on the visible prompt context and project memories, though it does not cite line-level artifacts in the final revision itself.",
+        "falsifiability": "It proposes measurable conditions such as queue backlog and judgment quality, but exact thresholds remain open.",
+        "anti_recursion": "It directly separates content layer, self-modification layer, and certification layer to prevent validator drift.",
+        "behavioral_delta": "The six protected objects and proposal queue limit would materially change future protocol mutation behavior.",
+        "compression_quality": "The final compressed rule is compact, memorable, and operational: content can auto-evolve, certification cannot.",
+        "future_leverage": "It leaves a strong next question about whether a cognitive axiom layer is needed, which can drive later architecture."
+      }
+    },
+    "codex": {
+      "base_score": 46,
+      "dimension_scores": {
+        "novelty": 4,
+        "connection": 5,
+        "usefulness": 5,
+        "coherence": 5,
+        "evidence_grounding": 4,
+        "falsifiability": 4,
+        "anti_recursion": 5,
+        "behavioral_delta": 5,
+        "compression_quality": 5,
+        "future_leverage": 4
+      },
+      "penalties": [],
+      "final_score": 46,
+      "score_reasons": {
+        "novelty": "The default-reject double constitution and break-glass path are useful refinements, though they partly converge with ClaudeCode's protected-object framing.",
+        "connection": "It connects constitutional layers, artifact diffs, external signals, rollback receipts, and emergency disablement into a practical governance model.",
+        "usefulness": "The ordinary/constitutional layer distinction and external_signal_minimum list are directly implementable as a protocol_guard.",
+        "coherence": "The revision cleanly accepts the main critiques and organizes them into ordinary layer, constitutional layer, and break-glass sections.",
+        "evidence_grounding": "It is grounded in the shared prompt and prior duel memories, though the final revision does not repeat explicit artifact citations.",
+        "falsifiability": "It can be tested by whether protocol_guard reduces drift without slowing answers, but the test thresholds remain undefined.",
+        "anti_recursion": "It blocks automatic self-lowering of self-evolution thresholds and prevents emergency states from becoming permanent commits.",
+        "behavioral_delta": "It specifies external_signal_minimum fields that could change how future micro-thinking mutations are accepted.",
+        "compression_quality": "The final compressed rule is strong and enforceable: ordinary layer may evolve, constitutional layer defaults to proposal only.",
+        "future_leverage": "It points toward protocol_guard as the next implementation path, though it is slightly less expansive than ClaudeCode's final open question."
+      }
+    }
+  },
+  "winner": "tie",
+  "tie_reason": "ClaudeCode scores 48 and Codex scores 46. The 2-point difference falls within the tie threshold. ClaudeCode is stronger on protected-object completeness and future architecture framing; Codex is stronger on default-reject protocol_guard and break-glass operationalization.",
+  "memory_decision": {
+    "decision": "long_term",
+    "target_path": "memory/wander_long_term/insight/micro-protocol-constitutional-guard.md",
+    "reason": "Both scores are above 36 and within the tie threshold, so the result should be merged as a long-term cognitive_duel memory: content-layer self-evolution may use shadow evaluation, but certification-layer and self-modification rules require protocol-outside validation."
+  },
+  "recommended_memory_summary": {
+    "title": "Micro-protocol constitutional guard",
+    "compressed_rule": "Micro-thinking protocols may evolve ordinary content through shadow evaluation, but self-evolution rules, validators, TTL, metric guards, and certification authority must default to proposal-only external review.",
+    "counterpoint": "ClaudeCode emphasizes six protected objects and proposal load limits; Codex emphasizes a default-reject constitutional layer, minimal protocol_guard fields, and break-glass as temporary disablement only."
+  }
+}

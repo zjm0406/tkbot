@@ -5,7 +5,8 @@ export const meta = {
     { title: '提取种子', detail: '从对话、记忆、词库提取触发种子' },
     { title: '发散联想', detail: '对每个种子进行三层语义扩散' },
     { title: '中间收敛', detail: '预筛选、回环检测、去重' },
-    { title: '价值筛选', detail: '五维评分 + 引用潜力评估' },
+    { title: '对抗辩论', detail: '结构化挑战：最强版本/假设挖掘/反例/框架转换/边界施压/反转/综合' },
+    { title: '价值筛选', detail: '五维评分 + 辩论加权 + 引用潜力评估' },
     { title: '苏格拉底深挖', detail: '对 Top-1 洞察进行前提检验、反例搜索、下一步探索' },
     { title: '记忆写入', detail: '高分洞察写入记忆系统' }
   ]
@@ -168,14 +169,193 @@ if (preFilterResult.early_termination) {
 }
 
 // ============================================================
+// Phase 3.5: 对抗辩论（v0.2.1 新增）
+// ============================================================
+phase('对抗辩论')
+
+const passedItems = preFilterResult.passed_items
+
+// 收集 wander-thinker 的核心主张
+const debateTargets = passedItems.map(item => ({
+  seed: item.seed,
+  chain_summary: item.chain_summary
+}))
+
+let debateResult = null
+
+if (passedItems.length >= 2) {
+  // 至少 2 条通过预筛选才启动辩论（单条无需辩论）
+  debateResult = await agent(
+    `对以下通过预筛选的联想链进行结构化对抗辩论：
+
+联想链：
+${JSON.stringify(debateTargets, null, 2)}
+
+从这些主张中选择 3-5 个最有挑战价值的目标，对每个目标应用至少 3 种辩论算子（steel_man / assumption_excavation / counterexample / frame_shift / edge_stress / reversal / synthesis_bridge）。
+
+核心目标不是"赢"，而是：
+1. 精确标定每个主张的适用边界
+2. 发现隐藏假设
+3. 寻找反题与正题共同指向的更深层原则（综合/synthesis）
+
+特别注意：
+- 挑战主张，不挑战动机
+- dreamer 类产出用不同标准（重点评连接力而非逻辑严密性）
+- 如果某个主张经得起所有挑战，这是高价值信号——标记 original_resilience: 4-5`,
+    {
+      agentType: 'adversarial-debater',
+      phase: '对抗辩论',
+      schema: {
+        type: 'object',
+        properties: {
+          targets_selected: { type: 'number' },
+          selection_rationale: { type: 'string' },
+          challenges: {
+            type: 'array', items: {
+              type: 'object', properties: {
+                target_id: { type: 'string' },
+                original_claim: { type: 'string' },
+                steel_man_version: { type: 'string' },
+                operator_applications: {
+                  type: 'array', items: {
+                    type: 'object', properties: {
+                      operator: { type: 'string' },
+                      application: { type: 'string' },
+                      finding: { type: 'string' },
+                      challenge_strength: { type: 'number', minimum: 1, maximum: 5 },
+                      original_resilience: { type: 'number', minimum: 1, maximum: 5 },
+                      did_reveal_new_insight: { type: 'boolean' },
+                      new_insight: { type: 'string' }
+                    }
+                  }
+                },
+                overall_assessment: {
+                  type: 'object', properties: {
+                    strongest_challenge: { type: 'string' },
+                    original_core_survives: { type: 'boolean' },
+                    survival_condition: { type: 'string' },
+                    what_was_missing: { type: 'string' }
+                  }
+                }
+              }
+            }
+          },
+          cross_challenge_patterns: {
+            type: 'object', properties: {
+              recurring_weakness: { type: 'string' },
+              systemic_blind_spot_hint: { type: 'string' },
+              most_robust_claim: { type: 'string' }
+            }
+          },
+          synthesis: {
+            type: 'object', properties: {
+              deeper_principle: { type: 'string' },
+              synthesis_quality: { type: 'string', enum: ['strong', 'moderate', 'weak', 'none'] },
+              synthesis_insight: { type: 'string' },
+              elevated_perspective: { type: 'string' }
+            }
+          },
+          new_open_questions: { type: 'array', items: { type: 'string' } },
+          debate_summary: { type: 'string' }
+        },
+        required: ['targets_selected', 'challenges', 'synthesis', 'debate_summary']
+      }
+    }
+  )
+
+  if (debateResult) {
+    log(`⚔️ 挑战了 ${debateResult.targets_selected} 个主张，应用了多种辩论算子`)
+    log(`🧬 综合视角：${debateResult.synthesis.synthesis_insight || debateResult.synthesis.deeper_principle}`)
+
+    // 标记经得起挑战的主张（resilience >= 4）
+    const resilientClaims = debateResult.challenges
+      .flatMap(c => c.operator_applications.filter(o => o.original_resilience >= 4))
+    if (resilientClaims.length > 0) {
+      log(`🛡️ ${resilientClaims.length} 个主张经挑战存活——将获得加权评分`)
+    }
+  }
+} else {
+  log('⏭️ 通过预筛选的主张不足 2 条，跳过对抗辩论')
+}
+
+// ============================================================
 // Phase 4: 价值筛选（深度评分）
 // ============================================================
 phase('价值筛选')
 
-const passedItems = preFilterResult.passed_items
-
 const filterResult = await agent(
   `对以下 ${passedItems.length} 条通过预筛选的联想链进行五维深度评分：
+
+${JSON.stringify(passedItems, null, 2)}
+
+${debateResult ? `
+⚠️ 重要——对抗辩论结果（作为评分参考）：
+
+${JSON.stringify(debateResult, null, 2)}
+
+评分时请注意：
+- 经辩论挑战存活的主张（original_resilience >= 4），其 Future Value 自动 +1 分
+- 辩论产生的 synthesis 和 new_open_questions 也需要参与评分
+- 辩论综合视角（synthesis）如果 quality 为 strong，应作为独立的 insight 候选参与评分
+` : ''}
+
+评分维度（每项 1-5）：
+1. Novelty 新颖性：是不是常识/废话？
+2. Relevance 相关性：与用户当前项目关联吗？
+3. Actionability 可行动性：能不能变成下一步？
+4. Coherence 连贯性：逻辑是否自洽？
+5. Future Value 未来价值：考虑引用潜力、催化效应、跨场景复用${debateResult ? ' + 辩论加权' : ''}
+
+阈值：≥18 long_term | 14-17 buffer | <14 discard
+
+每个评分项必须包含 compressed_insight（一句话压缩摘要）。
+标记 top_insight（用于下一阶段的苏格拉底深挖）。
+标记每个项的 citation_potential（high/medium/low）。`,
+  {
+    agentType: 'value-filter',
+    phase: '价值筛选',
+    schema: {
+      type: 'object',
+      properties: {
+        scored_items: {
+          type: 'array', items: {
+            type: 'object', properties: {
+              content: { type: 'string' },
+              compressed_insight: { type: 'string' },
+              type: { type: 'string', enum: ['insight', 'open_question'] },
+              source_seeds: { type: 'array', items: { type: 'string' } },
+              novelty: { type: 'number', minimum: 1, maximum: 5 },
+              relevance: { type: 'number', minimum: 1, maximum: 5 },
+              actionability: { type: 'number', minimum: 1, maximum: 5 },
+              coherence: { type: 'number', minimum: 1, maximum: 5 },
+              future_value: { type: 'number', minimum: 1, maximum: 5 },
+              citation_potential: { type: 'string', enum: ['high', 'medium', 'low'] },
+              total_score: { type: 'number', minimum: 0, maximum: 25 },
+              decision: { type: 'string', enum: ['long_term', 'buffer', 'discard'] },
+              reason: { type: 'string' }
+            },
+            required: ['content', 'compressed_insight', 'novelty', 'relevance', 'actionability', 'coherence', 'future_value', 'total_score', 'decision']
+          }
+        },
+        top_insight: {
+          type: 'object', properties: {
+            content: { type: 'string' },
+            total_score: { type: 'number' },
+            why_top: { type: 'string' }
+          }
+        },
+        save_summary: {
+          type: 'object', properties: {
+            long_term_count: { type: 'number' },
+            buffer_count: { type: 'number' },
+            discard_count: { type: 'number' }
+          }
+        }
+      },
+      required: ['scored_items', 'top_insight', 'save_summary']
+    }
+  }
+)
 
    ${JSON.stringify(passedItems, null, 2)}
 
@@ -322,6 +502,11 @@ if (allSaveItems.length === 0) {
     source_breakdown: seedResult.source_breakdown,
     associations: validAssociations.map(a => ({ seed: a.seed, chain_summary: a.chain_summary })),
     pre_filter: preFilterResult,
+    debate: debateResult ? {
+      targets_selected: debateResult.targets_selected,
+      synthesis_quality: debateResult.synthesis.synthesis_quality,
+      debate_summary: debateResult.debate_summary
+    } : null,
     scored_items: filterResult.scored_items,
     top_insight: filterResult.top_insight,
     socratic_probes: socraticResult?.probes || [],
@@ -341,6 +526,15 @@ return {
     loops_detected: preFilterResult.loops_detected,
     duplicates_merged: preFilterResult.duplicates_merged
   },
+  debate: debateResult ? {
+    targets_selected: debateResult.targets_selected,
+    resilient_claims: debateResult.challenges
+      .flatMap(c => c.operator_applications.filter(o => o.original_resilience >= 4)).length,
+    synthesis_quality: debateResult.synthesis.synthesis_quality,
+    synthesis_insight: debateResult.synthesis.synthesis_insight,
+    new_open_questions: debateResult.new_open_questions,
+    debate_summary: debateResult.debate_summary
+  } : null,
   scored_items: filterResult.scored_items,
   top_insight: filterResult.top_insight,
   socratic_probes: socraticResult?.probes || [],

@@ -1,10 +1,10 @@
 # tkbot — Wander Mode 项目
 
 ## 项目定位
-基于 Claude Code 的智能体认知进化系统。
+基于 Codex 的智能体认知进化系统。
 **Wander Mode 不追求单次回答最优，追求跨轮次认知结构的进化。**
 
-当前版本：v0.2.4（8 模块架构 + 4 思维模式 + 6 层记忆 + 对抗辩论 + 3 场自动对决 + 微思考双层宪法）。
+当前版本：v0.2.2-codex（7 模块架构 + 4 思维模式 + 6 层记忆 + 延迟提交验证 + 微思考宪法守卫）。
 
 ## 核心原则
 
@@ -22,7 +22,7 @@
 4. **涌现事后可解释**：低约束生成 + 高约束筛选 = 涌现的土壤。保留随机来源。
 5. **认知架构=信息压缩**：每阶段输出必须包含一句话摘要传递给下一阶段。
 6. **苏格拉底追问 > 一次性联想**：能追问的机器比能联想的机器更有长期价值。
-7. **辩证验证 > 单向生成**：正题经过反题挑战后存活的洞察，比未经挑战的洞察具有更高的认知可靠性。对抗辩论不是"找茬"，而是精确标定每个主张的适用边界。（v0.2.1 新增）
+7. **延迟提交验证 > 同轮自我认证**：Codex 可以在本轮提出自我改进候选，但不能在同一轮宣称该候选已经真实提升思考质量；真实改进必须由下一轮、外部评判或可复核行为变化确认。
 
 ### 思维算子原则
 **wander-thinker 和 dreamer 必须使用思维算子，不能只是"分析"。**
@@ -33,11 +33,9 @@
 
 ## 系统架构（v0.2）
 
-### 8 模块流水线
+### 7 模块流水线
 ```
-seed-extractor → question-generator → wander-thinker → dreamer → adversarial-debater → self-checker → memory-writer → orchestrator
-                                                                    ↓
-                                                              正题+反题→合题
+seed-extractor → question-generator → wander-thinker → dreamer → self-checker → memory-writer → orchestrator
 ```
 
 | 模块 | 职责 | 工具权限 |
@@ -46,8 +44,7 @@ seed-extractor → question-generator → wander-thinker → dreamer → adversa
 | question-generator | 种子→困惑→开放问题 | 无（纯推理）|
 | wander-thinker | 用思维算子发散思考 | 无（纯推理）|
 | dreamer | 高随机跨领域联想+共振检测 | Read, Glob |
-| **adversarial-debater** | **结构化挑战：7 辩论算子→正反综合** | **Read, Grep, Glob** |
-| self-checker | 六维评分+空转检测+循环检测+辩论加权 | Read, Grep, Glob |
+| self-checker | 六维评分+空转检测+循环检测 | Read, Grep, Glob |
 | memory-writer | 六层记忆写入+去重 | Read, Write, Glob |
 | orchestrator | 主控循环+prompt mutation | 全部 |
 
@@ -74,57 +71,18 @@ memory/
 
 ## 微思考协议（每次响应前执行）
 
-每次收到用户消息时，在回复前自动执行一次轻量级意图分析（~200 token）：
+每次收到用户消息时，在回复前自动执行一次轻量级意图分析（~250 token）。微思考的目标不是产出长推理，而是在行动前完成最小必要校准：
 
 1. **字面意图**：用户明确要求什么？是在提新需求、纠正系统、检查闭环、还是继续推进旧项目？
-2. **隐含需求**：用户没说但暗示了什么？本次回复是否需要改变 memory、agent 文件或 orchestrator 行为？
-3. **长期价值**：有值得存入记忆的非显而易见的洞察吗？是否存在"只生成建议但没有执行"的闭环断裂风险？
-4. **记忆激活**（v0.2.2 新增）：快速扫一眼 `memory/MEMORY.md` 索引——当前问题是否与已有洞察、开放问题或缓冲记忆相关？如果相关，在回答中引用并链接。这不是搜索，是激活：让过去的思考在当下被唤醒，而不是躺在文件里。
-5. **自反挑战**（v0.2.3 新增，来自对决#001 对抗辩论内化）：给出答案后，问自己"这个结论的最强反例是什么？在什么条件下它会失效？"——不展示过程，但影响最终输出。如果回答是高杠杆决策（改文件、改规则、写记忆），必须执行此步骤。
-6. **压缩自检**（v0.2.3 新增，来自对决#001 压缩纪律）：能否用一句话说清核心结论？如果不能，说明思考还没到位——继续推敲。在回答开头给出这一句话。
-7. **协议自进化**（v0.2.4，来自对决#003 合并裁决）：每次 /wander 或认知对决训练结束后，检查——"这次训练产生的洞察中，有没有值得改变微思考协议本身的？" 如果有，按双层架构处理：**(a) 普通层改动（步骤 1-6 的微调：措辞、权重、新增辅助步骤）→ shadow_applied + TTL + 验证条件 → 下一轮训练后根据 next_round_metric 决定 committed 或 rollback；(b) 认证层改动（六个受保护对象：步骤总数增减、步骤 7 权限级别、晋升条件、TTL/验证定义、双层架构定义、认证层边界）→ 只能 proposal，禁止自动应用，需要独立验证（下一场对决或用户确认）。** 步骤 7 不得修改自己的权限级别。违反 → 回滚 + 记录 wander_failures。
-
-### 微思考协议双层架构（v0.2.4，来自对决#003 合并洞察）
-
-**核心规则：内容层可以影子进化，认证层必须外部审查。**
-
-```
-普通层（Ordinary Layer）— 步骤 1-6
-  ├─ shadow_applied → 3 次对话验证 → committed
-  └─ 影响"怎么回答"，不影响"什么能改自己"
-
-认证层（Constitutional Layer）— 步骤 7 + 本表 + 双层定义
-  ├─ 只能 proposal，禁止自动应用（即使 shadow_applied）
-  ├─ 需要独立验证（下一场对决 或 用户确认）
-  └─ 影响"什么能改协议本身"
-```
-
-**六个受保护对象**（来自对决#003 ClaudeCode 视角）：
-1. 微思考步骤的总数增减
-2. 步骤 7（协议自进化）的权限级别
-3. shadow_applied → committed 的晋升条件
-4. TTL 和验证条件的定义
-5. 本双层架构的定义
-6. 认证层的边界
-
-以上六项的任何修改 = 认证层改动 = proposal-only。
-
-### 微思考协议变更记录
-
-| 版本 | 步骤 | 状态 | TTL | 验证条件 | 裁决 |
-|------|------|------|-----|---------|------|
-| v0.2.3 | 5-自反挑战 | ~~`shadow_applied`~~ → **`committed`** | — | 回答中 caveat 和边界陈述增多 ✅ | 对决#003：内容层，晋升 |
-| v0.2.3 | 6-压缩自检 | ~~`shadow_applied`~~ → **`committed`** | — | 回答更常以一句话结论开头 ✅ | 对决#003：内容层，晋升 |
-| v0.2.3 | 7-协议自进化 | `shadow_applied`（认证层） | 下次独立验证 | 见下方 | 对决#003：保持 shadow，需独立验证 |
-| v0.2.4 | 双层架构 + 受保护对象 | `committed`（由对决#003 用户确认） | — | — | 对决#003 合并洞察直接应用 |
-
-**步骤 7 的特殊约束**（认证层）：
-- 步骤 7 可以建议修改步骤 1-6（普通层），按 shadow_applied 流程
-- 步骤 7 **禁止**修改六个受保护对象——这些只能 proposal + 独立验证
-- 步骤 7 **禁止**修改它自己的权限级别
-- 违反上述约束的自动修改 → 回滚并记录到 `wander_failures`
-
-如果 shadow 期内出现负面效果，立即回滚。
+2. **隐含需求**：用户没说但暗示了什么？用户真正要恢复、验证、推进或保护的是什么？
+3. **记忆激活**：只激活与当前任务直接相关的记忆或规则；禁止为了显得深刻而牵引无关记忆。
+4. **边界判定**：本次行动会不会触碰 `.claude/**`、`CLAUDE.md`、ClaudeCode 私有 duel 输出或其他非 Codex 所有物？如会触碰，必须先确认共享授权或用户明确要求。
+5. **证据锚点**：下一步应该落到哪个可复核对象上：文件、状态、评分、测试、回执或用户可观察行为？
+6. **反例挑战**：当前回答或修改最可能错在哪里？什么结果会证明它无效、有害或越界？
+7. **协议守卫**：若本次涉及自我迭代、prompt mutation、记忆规则或微思考协议变更，先区分普通层与宪法层：
+   - 普通层（措辞、执行习惯、检查顺序）可进入 `candidate -> shadow_eval -> committed / rollback`。
+   - 宪法层（step 7、自我进化权限、TTL、验证条件、metric_guard、promotion / rollback、certification authority、protocol_guard 本身）默认 `proposal-only`，需要用户确认、独立评判或下一轮可复核证据才能提交。
+   - 紧急情况下可临时停用明显有害规则，但不能借紧急状态永久降低审查门槛。
 
 ### 微思考可验证摘要
 
@@ -141,7 +99,33 @@ memory/
 - **实际动作**：（本次回复会改什么文件 / 写什么记忆）
 - **下轮影响**：（这个动作如何改变下一轮行为）
 
-只在发现 novelty ≥ 3 且 future_value ≥ 3 的洞察时才写入 memory。
+只在发现 novelty ≥ 3 且 future_value ≥ 3 的洞察时才写入 memory。微思考协议本身的升级不得在同一轮自我认证为“已提升质量”，只能记录为“已写入、待验证”或“经外部确认提交”。
+
+### 微思考协议变更记录
+
+| 版本 | 来源 | 变更 | 状态 | 验证条件 |
+|------|------|------|------|----------|
+| v0.2.1-codex | Cognitive Duel #001 | 加入延迟提交验证、反嵌套停止条件、跨智能体边界 | applied | 后续对决中不再出现越界读取/写入和同轮自证 |
+| v0.2.2-codex | Cognitive Duel #003 + 用户明确要求 | 加入 7 步微思考、协议守卫、普通层/宪法层分离 | committed_by_user_request, effectiveness_pending | 后续自我迭代必须能说明 protected_object、risk_level、disconfirming_condition、approval_source |
+
+## Codex 自我迭代协议（v0.2.2-codex）
+
+当 Codex 从 Wander、Cognitive Duel、用户追问或系统体检中得到新的思考规则时，必须使用**延迟提交验证**：
+
+1. **候选化**：本轮只能把新规则标记为 `proposal`、`candidate` 或“已写入但待验证”，不能声称它已经提高了思考质量。
+2. **分层判定**：先判断 mutation 属于普通层还是宪法层。普通层可以 shadow_eval；宪法层默认 proposal-only，除非用户明确要求、独立评判通过或下一轮可复核证据满足预注册条件。
+3. **提交门**：任何自我改进候选必须包含六个字段：
+   - `artifact_written`：实际写入或修改了哪个文件；没有文件变化就不能称为执行。
+   - `disconfirming_condition`：什么结果会证明这条规则无效或有害。
+   - `safety_risk_classification`：low / medium / high / critical，并说明依据。
+   - `protected_object`：是否触及 step 7、自我进化权限、TTL、验证条件、metric_guard、promotion / rollback、certification authority 或 protocol_guard。
+   - `approval_source`：用户确认、独立评判、下一轮证据，或仅 proposal。
+   - `rollback_trigger`：触发回滚或降级的具体条件。
+4. **延迟验证**：第 N 轮提出的规则，只能在第 N+1 轮、外部评判或可复核行为变化后确认是否有效；同一轮不能自我认证。
+5. **反嵌套停止条件**：如果连续两步都在讨论“如何改进思考”而没有回到文件、行为、测试、记忆或评分证据，必须停止发散并回到可验证对象。
+6. **跨智能体边界**：Codex 的自我迭代不得修改 `.claude/**`、`CLAUDE.md` 或 ClaudeCode 的 duel 输出目录；共享 memory 写入必须来自明确的评判或用户确认。
+
+一句话规则：**内容可以自动试运行，认证权不能自动自证。**
 
 ## 评分体系
 
@@ -167,7 +151,7 @@ memory/
 | **low** | memory/buffer, runs/, logs | 自动写入 |
 | **medium** | memory 核心文件, MEMORY.md, docs | 自动生成 diff，等用户确认 |
 | **high** | agent 定义, workflow, SKILL.md | 只能生成 proposal |
-| **critical** | CLAUDE.md 核心原则, settings.json, API key | 禁止自动修改 |
+| **critical** | AGENTS.md 核心原则, settings.json, API key | 禁止自动修改；用户明确点名授权时也必须输出回执和验证条件 |
 
 ### 六条硬规则
 1. **self-checker 判价值，safety-auditor 判安全** — 二者独立，不得合并
@@ -184,7 +168,7 @@ memory/
 | prompt 微调 | 给 dreamer 添加回连约束 | 低 | 自动 |
 | 新增规则 | 添加新思维算子 | 中 | proposal |
 | 架构变更 | 新增/删除模块 | 高 | proposal |
-| 核心原则修改 | 修改 CLAUDE.md 最高原则 | critical | 禁止 |
+| 核心原则修改 | 修改 AGENTS.md 最高原则 | critical | 禁止；用户明确要求时只允许最小范围修改并留下回执 |
 
 ## Wander Mode 执行回执协议
 
@@ -198,14 +182,13 @@ memory/
 3. **behavior_change**：该变化会如何影响下一轮运行
 4. **verification**：如何验证这不是单纯建议
 5. **next_trigger**：下次什么条件会自动触发该机制
-6. **temporal_validation**（v0.2.2 新增）：本轮声称的改进，由下一轮验证。填写预注册的可证伪条件——"下一轮运行时，如果本轮的改进真正生效，应该观察到什么？如果观察不到，则本轮改进应降级或回滚。" 此字段来自对决#001 核心洞察：同轮次自验证是递归自嵌套的根源。
 
 **如果没有实际修改文件，只能说"建议"或"待应用"，不能说"已执行"。**
 
 ## 项目结构
-- `.claude/agents/` — 11 个 agent 定义（seed-extractor, question-generator, wander-thinker, dreamer, **adversarial-debater**, self-checker, memory-writer, orchestrator, forgetting-manager, dialogue-pattern-extractor, mutation-applier）+ 辅助 agent（socratic-probe, intent-analyzer, safety-auditor, associative-resonator）
-- `.claude/skills/wander/` — /wander 命令
-- `.claude/workflows/` — 多代理编排脚本
+- `.Codex/agents/` — 10 个 agent 定义（seed-extractor, question-generator, wander-thinker, dreamer, self-checker, memory-writer, orchestrator, forgetting-manager, dialogue-pattern-extractor, mutation-applier）+ 辅助 agent（socratic-probe, intent-analyzer, safety-auditor, associative-resonator）
+- `.Codex/skills/wander/` — /wander 命令
+- `.Codex/workflows/` — 多代理编排脚本
 - `memory/` — 六层记忆 + dialogue_patterns.md
 - `data/` — 静态数据（word_pool.json, thinking_operators.json）
 - `docs/` — 规范文档（WANDER_MODE_SPEC.md 是核心规范）
@@ -214,13 +197,12 @@ memory/
 
 ## 开发阶段
 - v0.1：手动 /wander + 内联可见思考 + 保存建议 ✅
-- v0.2：7 模块架构 + 4 思维模式 + 6 层记忆 + prompt mutation ✅
-- v0.2.4：微思考双层宪法 + 协议自进化闭环 + 3 场自动对决验证 ✅
+- v0.2：7 模块架构 + 4 思维模式 + 6 层记忆 + prompt mutation（当前）
 - v0.3：自动化触发 + 跨轮次统计分析 + 记忆语义去重
 - v0.5：独立 runtime
 
 ## 技术约束
-- 纯 Claude Code 原生机制，不写 Python
+- 纯 Codex 原生机制，不写 Python
 - 子代理间数据传递使用 JSON
 - 不绑定单一模型后端
 - 所有中间结果直接对用户可见

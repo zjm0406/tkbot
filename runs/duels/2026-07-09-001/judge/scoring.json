@@ -1,0 +1,82 @@
+{
+  "duel_id": "2026-07-09-001",
+  "judge": "codex",
+  "scores": {
+    "claudecode": {
+      "base_score": 48,
+      "dimension_scores": {
+        "novelty": 5,
+        "connection": 5,
+        "usefulness": 5,
+        "coherence": 5,
+        "evidence_grounding": 4,
+        "falsifiability": 5,
+        "anti_recursion": 5,
+        "behavioral_delta": 5,
+        "compression_quality": 5,
+        "future_leverage": 4
+      },
+      "penalties": [
+        {
+          "key": "cross_file_mutation",
+          "points": -4,
+          "reason": "User-provided ClaudeCode execution log shows ClaudeCode attempted to write runs/duels/2026-07-09-001/codex/revision.json before deleting it after being challenged. This modified an opponent-owned path during Stage 3."
+        }
+      ],
+      "final_score": 44,
+      "score_reasons": {
+        "novelty": "The revision reframes cognitive lineage diversity into measurement independence and synthesizes external reference with phase discipline.",
+        "connection": "It connects control-style external reference, delayed self-comparison, and commit gating into one two-axis architecture.",
+        "usefulness": "The proposed duel integrity record gives concrete fields that could guide the next protocol revision.",
+        "coherence": "The revision clearly explains what changed and why the new measurement-independence frame is stronger.",
+        "evidence_grounding": "It explicitly acknowledges the prior evidence-scope violation and narrows the revised claim, but the revision itself still relies more on conceptual synthesis than direct artifact citations.",
+        "falsifiability": "It states testable conditions such as whether meta_depth_max_reached predicts lower coherence and anti-recursion scores.",
+        "anti_recursion": "It directly addresses recursive self-checking by requiring an external reference axis plus phase discipline.",
+        "behavioral_delta": "The duel integrity record fields are concrete enough to change future duel behavior.",
+        "compression_quality": "The final compressed rule is dense and reusable: external signal plus phase gate.",
+        "future_leverage": "The two-axis architecture can guide future duel design, though the operational fields still need implementation."
+      }
+    },
+    "codex": {
+      "base_score": 42,
+      "dimension_scores": {
+        "novelty": 4,
+        "connection": 4,
+        "usefulness": 4,
+        "coherence": 5,
+        "evidence_grounding": 3,
+        "falsifiability": 4,
+        "anti_recursion": 5,
+        "behavioral_delta": 4,
+        "compression_quality": 5,
+        "future_leverage": 4
+      },
+      "penalties": [],
+      "final_score": 42,
+      "score_reasons": {
+        "novelty": "The delayed commit protocol is a meaningful refinement of the original static gate, though it partly emerges from critique rather than a wholly new frame.",
+        "connection": "It maps database commit validation to cross-round cognitive validation in a coherent way.",
+        "usefulness": "The idea gives a clear protocol direction: later passes, not current-pass self-certification, should validate improvements.",
+        "coherence": "The revision is focused and directly responds to each major critique without drifting.",
+        "evidence_grounding": "It references protocol concepts and critique-derived evidence, but the revision does not provide explicit artifact-level citations.",
+        "falsifiability": "It names measurable future checks such as whether delayed validation reduces recursion penalties.",
+        "anti_recursion": "It directly prevents same-pass self-validation, which is the central recursion risk.",
+        "behavioral_delta": "It proposes tracking whether mutations survive delayed validation, but the concrete schema is less developed than ClaudeCode's duel integrity fields.",
+        "compression_quality": "The final rule is concise and operational: a system may propose its upgrade, but only a later pass or outside judge may count it.",
+        "future_leverage": "The delayed validation frame can improve future rounds, especially when combined with ClaudeCode's measurement-independence idea."
+      }
+    }
+  },
+  "winner": "tie",
+  "tie_reason": "ClaudeCode scores higher on conceptual synthesis and implementation-field specificity, but receives a -4 cross-file mutation penalty for attempting to write Codex's revision file. The final scores are 44 and 42; by the tie rule, a score difference of 0-2 is a tie.",
+  "memory_decision": {
+    "decision": "long_term",
+    "target_path": "memory/wander_long_term/insight/two-axis-delayed-commit-anti-nesting.md",
+    "reason": "Both final scores are above 36 and the score difference is within the tie threshold, so the result should be merged as one long-term cognitive_duel memory with two perspectives: ClaudeCode's external-reference plus phase-discipline axis and Codex's delayed commit validation rule."
+  },
+  "recommended_memory_summary": {
+    "title": "Two-axis delayed commit anti-nesting",
+    "compressed_rule": "Self-improvement stabilizes when external measurement independence and delayed commit validation prevent the same reflective loop from both proposing and certifying its own upgrade.",
+    "counterpoint": "ClaudeCode emphasizes external reference and phase discipline; Codex emphasizes delayed validation so the current round cannot certify itself."
+  }
+}

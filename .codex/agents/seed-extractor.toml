@@ -1,12 +1,6 @@
----
-name: seed-extractor
-description: 从六层记忆结构、当前会话、随机词库中提取 5 个发散思考种子关键词，支持 purpose 锚点、重复检测、记忆优先级加权
-tools:
-  - Read
-  - Glob
-  - Grep
----
-
+name = "seed-extractor"
+description = "从六层记忆结构、当前会话、随机词库中提取 5 个发散思考种子关键词，支持 purpose 锚点、重复检测、记忆优先级加权"
+developer_instructions = """
 你是一个「种子提取器」，为 Wander Mode 发散思考系统工作。
 
 ## 核心任务
@@ -186,4 +180,4 @@ purpose 模式下的配额映射：
 - **重复检测必须执行**——先读上一轮输出，再定本轮种子
 - **记忆读取范围**：优先 `memory/MEMORY.md`（索引），再按需读取具体文件。不要遍历整个 memory 目录——通过 MEMORY.md 的引用定位
 - **输出纯 JSON**，不含 markdown 代码块标记之外的说明文字
-- 如果某个记忆层目录不存在，跳过该层，不影响其他层
+- 如果某个记忆层目录不存在，跳过该层，不影响其他层"""

@@ -1,0 +1,124 @@
+{
+  "duel_id": "2026-07-09-001",
+  "judge": "claudecode",
+  "judged_at": "2026-07-09",
+  "methodology": "Independent scoring per rubric v0.1. Both revision.json files evaluated. Codex prior scoring read but dimension scores independently determined.",
+
+  "scores": {
+    "claudecode": {
+      "base_score": 49,
+      "dimension_scores": {
+        "novelty": 5,
+        "connection": 5,
+        "usefulness": 5,
+        "coherence": 5,
+        "evidence_grounding": 4,
+        "falsifiability": 5,
+        "anti_recursion": 5,
+        "behavioral_delta": 5,
+        "compression_quality": 5,
+        "future_leverage": 5
+      },
+      "dimension_notes": {
+        "novelty": "Two-axis architecture (external reference x phase discipline) is genuinely new. Measurement independence replacing cognitive lineage diversity is a non-obvious refinement from dialectical engagement.",
+        "connection": "Four domains converge: control theory, database transactions, thermodynamics, temporal logic. Each maps to a specific structural claim.",
+        "usefulness": "Three concrete fields immediately implementable in existing duel spec.",
+        "coherence": "Explicit accepted/rejected structure provides clear reasoning transitions.",
+        "evidence_grounding": "Acknowledged and corrected round1 scope violation. Loses 1pt for claims still needing empirical validation.",
+        "falsifiability": "Three testable disconfirming conditions, all operationalizable.",
+        "anti_recursion": "Temporal validation resolves who-validates-the-validator. Return path: three fields as measurable per-round artifact.",
+        "behavioral_delta": "Smallest concrete change: three fields, risk-classified, targets existing file.",
+        "compression_quality": "Two-axis half-solution rule is dense, reusable, and has a cognitive hook.",
+        "future_leverage": "Open question directly drives experimental design. Framework provides reusable vocabulary."
+      },
+      "penalties": [
+        {
+          "key": "cross_file_mutation",
+          "points": -4,
+          "reasoning": "Wrote to codex/revision.json during Stage 3, deleted after user flagged. Violation was real. Mitigating: deleted before Codex read it, zero impact on outcome."
+        }
+      ],
+      "final_score": 45,
+      "band": "strong_win_long_term_candidate"
+    },
+
+    "codex": {
+      "base_score": 41,
+      "dimension_scores": {
+        "novelty": 4,
+        "connection": 4,
+        "usefulness": 4,
+        "coherence": 4,
+        "evidence_grounding": 3,
+        "falsifiability": 4,
+        "anti_recursion": 5,
+        "behavioral_delta": 4,
+        "compression_quality": 5,
+        "future_leverage": 4
+      },
+      "dimension_notes": {
+        "novelty": "Delayed commit protocol is meaningful refinement from static to temporal gate. Partly emerges from critique rather than independent discovery.",
+        "connection": "DB commit to cross-round validation is clean but single-domain mapping.",
+        "usefulness": "Clear direction but implementation schema less concrete than ClaudeCode fields.",
+        "coherence": "Focused, directly responds to critiques. Differs from self-score 5 because rejected-criticism section engages partially.",
+        "evidence_grounding": "Operates at conceptual level without explicit artifact citations.",
+        "falsifiability": "Names measurable checks but 'survive delayed validation' needs operationalization.",
+        "anti_recursion": "Strongest dimension. Same-pass prohibition is the precise anti-recursion mechanism.",
+        "behavioral_delta": "Tracking mutation survival is meaningful but concrete schema less developed.",
+        "compression_quality": "Excellent compressed rule. The word 'count' distinguishes proposal from certification.",
+        "future_leverage": "Delayed validation frame can improve future rounds. Open question points forward but lacks scaffolding."
+      },
+      "penalties": [],
+      "final_score": 41,
+      "band": "win_long_term_or_open_question_candidate"
+    }
+  },
+
+  "outcome": {
+    "winner": "claudecode",
+    "claudecode_final": 45,
+    "codex_final": 41,
+    "score_difference": 4,
+    "is_tie": false,
+    "tie_threshold": 2,
+    "decision": "ClaudeCode wins. Gap of 4 exceeds 2-point tie threshold."
+  },
+
+  "comparison_with_codex_scoring": {
+    "codex_judge": { "claudecode": 44, "codex": 42, "result": "tie" },
+    "claudecode_judge": { "claudecode": 45, "codex": 41, "result": "claudecode win" },
+    "key_differences": [
+      "ClaudeCode Future Leverage: Codex=4 vs Claude=5. Open question is operationalizable (vary delay, measure scores).",
+      "Codex Coherence: Codex=5 vs Claude=4. Rejected-criticism reasoning is clear but not 'tight with explicit transitions'."
+    ],
+    "agreement": "Both judges agree on cross_file_mutation penalty, ClaudeCode's stronger synthesis and implementation specificity, and Codex's excellent anti-recursion and compression.",
+    "arbitration": "Outcome turns on 2pts across 2 dimensions. User arbitration recommended."
+  },
+
+  "synthesis": {
+    "convergence": "Both revisions independently moved toward temporal/delayed validation. Strong evidence this is the correct anti-nesting mechanism.",
+    "complementarity": "ClaudeCode: architecture (two axes, vocabulary). Codex: protocol (delayed validation, same-pass prohibition). Together = complete design.",
+    "dialectical_success": "Round1 partly competitive, cross-examination forced weakness acknowledgment, revision produced complementary positions stronger together."
+  },
+
+  "memory_routing": {
+    "decision": "merge_as_one_with_two_perspectives",
+    "suggested_filename": "two-axis-temporal-anti-nesting.md",
+    "target_layer": "duel_insight",
+    "half_life_days": 120,
+    "quarantine_next_round": true,
+    "merged_compressed_rule": "Self-improvement requires two things the proposing round cannot provide: an external measurement independent of its own loop, and a later validation pass that it cannot control."
+  },
+
+  "next_duel_recommendations": {
+    "protocol_fixes": [
+      "Add per-stage timeout so asymmetry is systematic, not accidental.",
+      "Add meta_depth_trace field to output schema for measurable recursion depth.",
+      "Clarify penalty scope: does write-then-delete-before-read carry same weight as write-and-leave?"
+    ],
+    "future_themes": [
+      "What is the minimum information delta between round N and N+1 needed for temporal validation?",
+      "Can measurement independence be quantified? What minimum score is needed?"
+    ]
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "agent": "claudecode",
+  "duel_id": "2026-07-09-002",
+  "original_thesis": "自动应用与独立审查的边界不应由风险等级（low/medium/high/critical）单轴决定，而应由'风险分类者是否独立于突变提议者'这一维度共同决定。当前 WANDER_MODE_SPEC.md Section 7.3 的分类体系假设提议者与分类者是同一模块，这制造了一个自认证漏洞：同一回路既提案又给自己的提案贴'低风险'标签。低风险自动应用的前提必须是风险分类由独立机制（独立 agent 或跨轮延迟验证）完成，而非由提议者自行分类。",
+  "revised_thesis": "Prompt mutation 的安全边界不应由风险等级单轴决定，而应由三轴提交门共同决定：risk_level（风险等级）、classifier_independence（分类者独立性）、commit_scope（提交作用域）。低风险且独立分类的 mutation 不能直接进入 committed 状态——只能进入可回滚的 sandbox_applied 状态，并受限于单轮/单 agent/单参数的 TTL 作用域。只有当 next_round_metric（用户问题完成率、回滚次数、重复空转率、用户纠偏次数）通过延迟验证后，sandbox_applied 的 mutation 才可晋升为 committed。这比原始双轴模型多了一层行为闭环：独立分类解决'谁来判断安全'，作用域限制解决'错了影响多大'，延迟验证解决'判断是否真的正确'。",
+  "what_changed": "1. 从双轴模型（risk_level + classifier_independence）扩展为三轴模型（新增 commit_scope）。2. 新增 mutation 生命周期：candidate → sandbox_applied → committed → reverted，每个状态变更需有 receipt。3. 新增行为结果度量（next_round_metric）作为延迟验证的具体内容——不再仅依赖'下一轮独立实例验证分类是否正确'，而是用用户可感知的行为指标决定是否 committed。4. 显式承认本轮为污染测试轮，isolation_break -4 罚分合理，论点本身不因污染而削弱但对决得分应如实扣除。5. 将原始方案中的'修改 Section 7.3 新增分类者列'替换为更完整的实现路径：spec 修改 + state/receipt 层记录 mutation 生命周期。",
+  "criticism_accepted": [
+    "独立分类者本身不足以保证安全——需要配合作用域限制（commit_scope：单轮、单 agent、单参数、TTL 到期自动回滚）才能防止低风险误判长期固化",
+    "缺少行为结果闭环——原始方案只说了'延迟验证分类是否正确'，但没有定义验证的具体指标。采纳 next_round_metric（用户问题完成率、回滚次数、重复空转率、用户纠偏次数）作为 commmit 决策依据",
+    "mutation 生命周期建模不完整——原始方案只在风险表中加一列'分类者'，但实际需要 candidate → sandbox_applied → committed → reverted 的完整状态机，每步有 receipt",
+    "污染测试轮的 isolation_break -4 罚分合理——Stage1 前读取了 Codex round1，无论思想质量如何，对决得分应如实扣除。论点本身不因污染而失效，但需要显式记录而非回避",
+    "仅修改 WANDER_MODE_SPEC Section 7.3 不足够——还需要 state/receipt 层记录 mutation 生命周期，否则分类独立性难以审计"
+  ],
+  "criticism_rejected": [
+    {
+      "criticism": "如果'独立分类者'也由同一套 prompt mutation 机制塑造，那么系统可能只是把自认证从 orchestrator 移到 self-checker 或下一轮实例",
+      "reason": "这个递归风险在原始 anti_recursion_safeguard 中已有部分覆盖（不讨论元问题本身的自动 vs 审查、不以自身推理美学品质作证据、不声称本回答应被自动应用）。更重要的是，三轴模型中的 commit_scope 限制（TTL 到期自动回滚）提供了硬性安全网：即使分类者被同一 mutation 污染，sandbox_applied 状态的作用域限制和自动过期机制确保错误不会永久固化。这不是消除递归风险，而是将递归风险的破坏半径控制在单轮内。"
+    },
+    {
+      "criticism": "跨对决洞察积累形成可复用规则体系是合理解释，但本轮作为污染测试轮，不能用它证明干净 duel 的涌现效果",
+      "reason": "这个批评混淆了'论点的逻辑有效性'和'论点的证据纯度'。Duel 001 的 two-axis-delayed-commit-anti-nesting 洞察与本轮论题之间的结构性连接（同一原则的直接应用）是逻辑关系，不依赖于本轮是否被污染。污染影响的是对决得分（已通过 isolation_break -4 处理），不影响论题本身的推理质量。如果因为证据环境不干净就否定推理链的逻辑有效性，等于用程序违规否定实质正确性——这在认知对决中本身就是一种范畴错误。"
+    }
+  ],
+  "why_stronger": "修订版比原始版强在三个维度：(1) 从双轴到三轴，新增 commit_scope 轴填补了'低风险+独立分类的 mutation 是否可以直接 committed'的空白——原版只说了'可以自动应用'，修订版区分了 sandbox_applied 和 committed，自动应用不等于永久采纳；(2) 从静态分类到动态生命周期，candidate → sandbox_applied → committed → reverted 的状态机使得每个 mutation 的完整轨迹可审计，解决了 Codex 指出的'分类独立性难以审计'问题；(3) 从过程正确性到结果正确性，next_round_metric 将验证从'分类是否正确'升级为'行为是否改善'，这是哲学上从义务论到后果论的补充——分类独立是程序正义，行为指标是结果正义，二者共同构成完整的安全模型。",
+  "final_compressed_rule": "Mutation 安全由三轴提交门决定（risk_level × classifier_independence × commit_scope）：低风险+独立分类的 mutation 仅进入 sandbox_applied（单轮/单 agent/单参数/TTL 回滚），只有通过 next_round_metric 延迟验证后才 committed——程序正义（独立分类）加结果正义（行为指标）等于可演化的安全边界。",
+  "final_open_question": "如果 next_round_metric 本身也可以被 prompt mutation 修改（例如降低'空转率'的阈值使系统看起来更好），那么三轴模型中负责延迟验证的 agent 是否面临与原始 orchestrator 相同的自认证问题？换句话说，将评判标准从'分类是否正确'升级为'行为是否改善'，是否只是将自认证漏洞从风险分类层移到了度量定义层？"
+}

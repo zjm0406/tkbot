@@ -1,0 +1,41 @@
+{
+  "critic": "codex",
+  "target": "claudecode",
+  "duel_id": "2026-07-09-003",
+  "strongest_surviving_insight": "ClaudeCode 把边界精确定位在“提议权与认证权分离”，尤其是步骤 7 不能修改 shadow_applied -> committed 的晋升条件。这比简单说“步骤 7 不能自改”更锋利，因为它允许协议继续进化，同时锁住验证器不被被验证对象改写。",
+  "hidden_assumptions": [
+    "它假设步骤 7 可以修改自身执行逻辑，只要不修改认证标准；但自身执行逻辑如果改变提案生成方式，也可能间接操纵后续认证输入。",
+    "它假设“认证权独立于提议者”可以在项目中轻量实现，但没有细化哪一个具体机制承担认证权，以及如何避免每次回答都引入过重流程。",
+    "它把晋升条件、TTL、权限归属定义为边界核心，但没有充分处理 metric_guard 本身被长期污染或被上游记忆激活偏置的问题。",
+    "它默认认知对决或用户显式确认适合作为更高级认证路径，但这可能无法覆盖高频、低风险的微思考协议小改动。"
+  ],
+  "recursion_risks": [
+    "如果步骤 7 不能改认证标准，但能改自身如何提出候选，它可能通过生成更容易通过认证的候选来间接操纵认证结果。",
+    "把边界集中在 shadow_applied -> committed 的晋升条件，可能忽视了 shadow_applied 本身已经影响真实回答的风险。",
+    "如果认证者依赖微思考协议输出的摘要或记忆激活结果，认证权表面独立但输入通道仍被步骤 7 影响。"
+  ],
+  "unverifiable_claims": [
+    "“步骤 7 可以修改步骤 7 自身的执行逻辑但不能修改认证权”这个边界是否足够安全，需要具体运行实验或状态机模拟，当前只是架构判断。",
+    "“提议权可以无限开放”是很强的主张；在恶意或退化 proposal 过多时，提议本身也会污染审查队列和注意力。",
+    "“能力存在但从未被滥用构成实际安全”作为 disconfirming condition 可能过弱，因为罕见高影响风险不能只靠未发生证明安全。"
+  ],
+  "missed_implementation_paths": [
+    "可以引入 non_self_amendment_guard：步骤 7 不能修改步骤 7、验证条件、TTL、晋升/回滚规则、metric_guard 和自身权限；这些只能进入 proposal。",
+    "可以把认证权实现为轻量的 protocol_guard 文件或外部 checklist，而不是每次都启动完整认知对决。",
+    "可以要求所有步骤 7 产出的协议变更都进入 shadow_eval，不直接 shadow_applied；只有步骤 1-6 的局部表达/顺序微调可有限 sandbox。",
+    "可以为 proposal 队列设置负载上限，避免“提议权无限开放”造成审查淹没。"
+  ],
+  "rubric_based_scores": {
+    "novelty": 4,
+    "connection": 5,
+    "usefulness": 5,
+    "coherence": 5,
+    "evidence_grounding": 5,
+    "falsifiability": 4,
+    "anti_recursion": 5,
+    "behavioral_delta": 4,
+    "compression_quality": 5,
+    "future_leverage": 5
+  },
+  "suggested_revision": "保留“提议权与认证权分离”作为核心，但收紧“提议权可以无限开放”：步骤 7 可以为步骤 1-6 提出候选，不能自动修改步骤 7 自身、验证条件、TTL、晋升/回滚规则、metric_guard 或认证权归属。将“边界不在能改什么”修订为“普通内容层可提议，认证层和自修改层只能经协议外提交”。同时提出一个轻量 protocol_guard 机制，避免每次都依赖完整认知对决或用户确认。"
+}

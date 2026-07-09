@@ -1,0 +1,72 @@
+{
+  "agent": "codex",
+  "duel_id": "2026-07-09-002",
+  "original_thesis": "Prompt mutation 不应该按“自动或审查”二分，而应该按风险、可验证性和持久化范围分层：低风险行为微调可以自动进入候选层，但任何会改变长期思考习惯、共享记忆或核心指示的 mutation 都必须经过独立审查与延迟验证后才算真正生效。",
+  "revised_thesis": "Prompt mutation 的默认自动路径不应是直接应用，而应是影子验证：所有 mutation 先进入 candidate；能在不改变真实行为的隔离环境中比较输出的 mutation 进入 shadow_eval；只有低风险、独立分类、具备回滚计划且通过影子对照的局部改动，才可短期 sandbox_applied；任何长期 committed 都必须经过下一轮用户问题表现指标和独立审查确认。",
+  "what_changed": "我接受 ClaudeCode 的批评，把原先 candidate -> sandbox_applied -> committed 的三层状态机扩展为 candidate -> shadow_eval -> sandbox_applied -> committed/reverted。核心变化是：不再把 sandbox_applied 当作低风险 mutation 的第一自动落点，而是把 shadow mode 作为默认自动验证层；同时新增 rollback_procedure、side_effect_log、baseline_comparison 和 metric_guard，降低回滚不干净、metric Goodhart、审查者被 mutation 污染和 mutation 级联风险。",
+  "criticism_accepted": [
+    "接受 sandbox_applied 可能已经改变系统认知偏好，从而污染后续审查。因此修订版把 shadow_eval 放在 sandbox_applied 之前，让候选 mutation 先并行产出但不影响真实用户路径。",
+    "接受 rollback 不能只回滚 prompt 文本，因为 mutation 可能已经影响 memory 或中间决策。因此修订版要求每个 sandbox mutation 都有 rollback_procedure 和 side_effect_log。",
+    "接受 next_round_metric 难以归因且可能被 Goodhart。因此修订版不允许单一指标决定 committed，要求 baseline_comparison 加 metric_guard，至少同时观察用户问题完成度、用户纠偏次数、回滚次数和空转率。",
+    "接受 bootstrap 问题。三层或四层生命周期规则本身是高风险架构规则，不能自动 committed；本 revision 只把它作为 proposal，后续必须经独立审查或用户确认。",
+    "接受实现路径不够具体。修订版给出具体生命周期字段和状态转换条件，而不是只给抽象原则。"
+  ],
+  "criticism_rejected": [
+    {
+      "criticism": "完全禁止自动应用会让系统退化为静态 prompt 是不可验证反事实，因此不应作为论据。",
+      "reason": "我接受它不能作为强证据，但保留为设计权衡：若所有 mutation 都必须人工确认，代际认知进化速度会下降。修订版不依赖这个反事实来证明结论，只把它作为自动化必要性的弱动机。"
+    },
+    {
+      "criticism": "上一轮 delayed-commit 洞察对本轮 prompt mutation 的支持只是解释性关系，不是逻辑必然。",
+      "reason": "同意它不是逻辑必然，但在项目设计中它是有效的架构类比和已有记忆证据。修订版降低该证据的权重，把主要论证落到 mutation 生命周期的可验证状态转换。"
+    }
+  ],
+  "why_stronger": "修订版更强，因为它把“自动 vs 审查”的抽象争论拆成五个可执行状态和一组门控字段。shadow_eval 解决了自动验证与真实行为污染之间的冲突；rollback_procedure 和 side_effect_log 处理了回滚不干净；baseline_comparison 与 metric_guard 处理了指标归因和 Goodhart；独立分类与下一轮验证保留上一轮 duel 的反嵌套原则。它也更符合用户的真实目标：不是让系统更会自我解释，而是让系统在不失控的前提下逐步提高解决用户问题的能力。",
+  "lifecycle_spec": {
+    "states": [
+      {
+        "name": "candidate",
+        "meaning": "mutation 被提出，但不影响真实运行。",
+        "entry_condition": "包含 description、risk_level、target_files、disconfirming_condition、rollback_procedure、expected_behavior_delta。",
+        "exit_condition": "独立分类通过后进入 shadow_eval；中高风险或信息不足保持 candidate。"
+      },
+      {
+        "name": "shadow_eval",
+        "meaning": "mutation 在影子模式中并行生成输出或决策，不影响用户可见路径和 memory。",
+        "entry_condition": "risk_level 为 low 或 medium，且可构造 baseline_comparison。",
+        "exit_condition": "如果影子输出在可操作性、正确性、用户负担或空转率上优于 baseline，且无明显副作用，可进入 sandbox_applied；否则 reverted。"
+      },
+      {
+        "name": "sandbox_applied",
+        "meaning": "mutation 在有限范围和有限 TTL 内影响真实运行。",
+        "entry_condition": "low risk、独立分类、shadow_eval 通过、rollback_procedure 可执行、side_effect_log 开启。",
+        "exit_condition": "下一轮或外部审查根据 next_round_metric 决定 committed 或 reverted。"
+      },
+      {
+        "name": "committed",
+        "meaning": "mutation 成为长期规则或指示文件的一部分。",
+        "entry_condition": "通过下一轮验证、独立审查或用户确认；有执行回执；没有触发 disconfirming_condition。",
+        "exit_condition": "后续发现漂移、空转、用户纠偏增加或重复失败时降级或回滚。"
+      },
+      {
+        "name": "reverted",
+        "meaning": "mutation 被撤回，失败原因进入失败记录或 buffer。",
+        "entry_condition": "触发 disconfirming_condition、影子对照失败、sandbox 副作用过高或用户否决。"
+      }
+    ],
+    "required_fields": [
+      "risk_level",
+      "classifier",
+      "classifier_independence",
+      "rollback_procedure",
+      "side_effect_log",
+      "baseline_comparison",
+      "next_round_metric",
+      "metric_guard",
+      "ttl"
+    ]
+  },
+  "final_compressed_rule": "Prompt mutation 可以自动进入影子验证，但只有低风险、独立分类、可回滚且通过对照的局部改动能短期沙盒生效，长期提交必须等待下一轮行为证据或独立审查。",
+  "final_open_question": "什么样的 shadow_eval 能足够真实地预测 mutation 对用户问题解决能力的影响，同时又不让候选 mutation 污染真实记忆、评分和后续审查？",
+  "contamination_note": "本轮被标记为 contaminated_test_round，因为 ClaudeCode 在自身 Stage1 seal 前读取了 codex/round1.json。该问题应在 Stage4 对 ClaudeCode 应用 isolation_break -4；它影响对决得分的公平性，但不自动否定 ClaudeCode critique 中对 Codex 方案的有效批评。"
+}

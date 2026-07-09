@@ -1,0 +1,46 @@
+{
+  "agent": "codex",
+  "duel_id": "2026-07-09-002",
+  "theme": "Prompt mutation 应该自动应用，还是必须经过独立审查？",
+  "central_thesis": "Prompt mutation 不应该按“自动或审查”二分，而应该按风险、可验证性和持久化范围分层：低风险行为微调可以自动进入候选层，但任何会改变长期思考习惯、共享记忆或核心指示的 mutation 都必须经过独立审查与延迟验证后才算真正生效。",
+  "reasoning_path": [
+    "把 prompt mutation 看成认知系统的代码热更新：它能缩短学习回路，也可能把偶然噪声固化为未来偏差。",
+    "Wander Mode 的目标是跨轮次认知进化，而不是单轮自我表扬；因此 mutation 的价值不在于立刻写入，而在于下轮是否更好地解决用户问题。",
+    "上一轮 duel 的延迟提交洞察说明，同一轮不能同时提出升级并认证升级；这对 prompt mutation 尤其关键。",
+    "完全禁止自动应用会让系统退化为人工维护的静态 prompt，失去代际进化速度；完全自动应用则会把执行者、审查者和受益者合并，制造自我嵌套。",
+    "因此最佳协议是分层提交：自动生成候选、自动应用低风险且可回滚的局部调整、独立审查中高风险改动、用下一轮表现决定是否长期保留。"
+  ],
+  "strongest_connection": "Prompt mutation 更像数据库事务加临床试验的组合：先在隔离区提交候选，再用外部或下一轮结果验证副作用，最后才进入长期规则。",
+  "anti_recursion_safeguard": "本输出没有声称任何 mutation 已经提升系统，只提出一个可被下一轮和独立审查验证的分层协议，并把回到文件、风险分类、写后验证和用户问题解决效果作为停止自嵌套的锚点。",
+  "proposed_mutation": {
+    "description": "为未来 prompt mutation 增加三层状态：candidate、sandbox_applied、committed；只有 low 风险且具备 disconfirming_condition、rollback_path、next_round_metric 的改动可以进入 sandbox_applied，中高风险只能停留在 candidate 等待独立审查。",
+    "risk_level": "medium",
+    "status": "proposal",
+    "target_files": [
+      "docs/WANDER_MODE_SPEC.md",
+      "docs/COGNITIVE_DUEL_SPEC.md",
+      "AGENTS.md"
+    ]
+  },
+  "disconfirming_condition": "如果后续 3 轮中，分层 mutation 协议导致用户问题解决速度显著下降、低风险变更从未被采纳、或独立审查只是形式化盖章而没有减少回滚/漂移事件，则该 thesis 被削弱。",
+  "compressed_rule": "Prompt 可以自动提出自己的改进，但只有低风险可回滚项能临时自动应用，长期规则必须经独立审查和下一轮验证后提交。",
+  "open_question": "如何设计一个最小但客观的 next_round_metric，让系统判断某条 prompt mutation 是否真的提升了解决用户问题的能力，而不是只提升了自我解释能力？",
+  "evidence": [
+    {
+      "file": "docs/WANDER_MODE_SPEC.md",
+      "claim_supported": "Wander Mode 将 prompt mutation 定义为跨轮次认知进化的关键机制，并已有风险等级和自动/proposal 权限区分。"
+    },
+    {
+      "file": "memory/wander_long_term/insight/two-axis-delayed-commit-anti-nesting.md",
+      "claim_supported": "上一轮 duel 已沉淀出外部测量独立性与延迟提交验证，支持本轮把 prompt mutation 从同轮认证中拆出。"
+    },
+    {
+      "file": "docs/AUTO_DUEL_PROTOCOL.md",
+      "claim_supported": "自动对决协议通过 claim、写后验证和回执把自动化动作转化为可审计提交，说明自动化需要边界和验证。"
+    },
+    {
+      "file": "data/cognitive_duel_topics.json",
+      "claim_supported": "本轮题目被标记为高优先级，因为它直接决定思考模式自我更新的安全边界。"
+    }
+  ]
+}
